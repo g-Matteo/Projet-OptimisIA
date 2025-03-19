@@ -1,3 +1,5 @@
+"""This file contains the functions that are in common between the classification pipeline, the evaluation pipeline, and the verbatim generator"""
+
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -10,24 +12,36 @@ client = OpenAI(
     api_key=os.environ.get("API_KEY"),
 )
 
-def file_to_str(filename):
-    res = ""
-    with open(filename, "r") as fd:
-        res = "".join(fd.readlines())
-    return res
-
-#Takes a string and a dictionary {"a" : "b"}, and returns the same string where every instance of "a" is replaced by an instance of "b"
 def substitute(s, substitutions):
+    """Takes a string and some substitutions, and applies these substitutions
+
+    - s is the string we want to modify
+    - substitutions is a dictionary
+
+    For instance, when given a dictionary {"a" : "b"}, it returns the same string
+    where every instance of "a" is replaced by an instance of "b". This function
+    is useful in order to add verbatims and other informations to a prompt.
+    """
     for key in substitutions:
         s = s.replace(key, substitutions[key])
     return s
 
-#Takes the filename of a prompt, and outputs the prompt
-def get_prompt(filename, substitutions = {}):
-    return substitute(file_to_str(filename), substitutions)
+def file_to_str(filename, substitutions = {}):
+    """Takes a filename, and outputs its content as a string.
+
+    Optionally, a substitution can be applied.
+    """
+    res = ""
+    with open(filename, "r") as fd:
+        res = "".join(fd.readlines())
+    return substitute(res, substitutions)
 
 #Makes a query to the LLM
 def LLM_query(prompt, substitutions = {}, is_json = False):
+    """Queries the LLM
+
+    Optionally, we can decide whether the output should be a json file or not.
+    """
     prompt = substutute(prompt, substitutions)
     if is_json:
         response = client.chat.completions.create(

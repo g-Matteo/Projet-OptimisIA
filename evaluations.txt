@@ -1,0 +1,4 @@
+['Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif']
+['Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif']
+['Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif']
+['Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif']
