@@ -71,6 +71,26 @@ def classify_tree_of_thoughts(verbatim, categories, minibatch_size = 6):
 
 
 
+def reflexion(verbatim,categories,minibatch_size =6 ):
+    actor_prompt=get_prompt("actor.txt",{"<verbatim>":verbatim})
+    classified_tones=[]
+    already_classified=[]
+    while(len(classified_tones)<len(categories)):## le but est de remplir tous les classified_toned pour que chaque classified_tones[i] convient chaque categories[i]
+        to_classify = categories[len(classified_tones):len(classified_tones) + minibatch_size]
+
+
+        current_prompt=substitute(actor_prompt,{"<already_classified>":list_to_JSON(already_classified,classified_tones),"<to-classify":list_to_JSON(to_classify)})
+
+        current_classified=classify(current_prompt,to_classify) ## on utilise current_prompt et les category qui devront etre classifié pour demander LLM de les classifié
+        ## une question; vu que classified tones était vide au début , comment notre LLM peut bien classifier avec des tones comme "négative","positive"?
+
+
+
+
+
+
+
+
 categories = list(json.loads(file_to_str("categories.json")).keys())
 
 #for each classification technique
