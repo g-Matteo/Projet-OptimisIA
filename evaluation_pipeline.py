@@ -35,7 +35,7 @@ def evaluation_pipeline():
     categories = list(json.loads(file_to_str("categories.json")).keys())
 
     #for each classification technique
-    for classification_method, name_of_method in zip([classify_zero_shot, classify_prompt_chaining, classify_tree_of_thoughts], ["Zero-Shot", "Prompt Chaining", "Tree of Thoughts"]):
+    for classification_method, name_of_method in zip([classify_zero_shot, classify_prompt_chaining, classify_tree_of_thoughts,classify_reflexion], ["Zero-Shot", "Prompt Chaining", "Tree of Thoughts","Reflexion"]):
         sum_hallucination_rates = 0
         sum_precision_rates = 0
         sum_recall_rates = 0

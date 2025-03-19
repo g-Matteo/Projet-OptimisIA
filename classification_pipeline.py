@@ -79,6 +79,72 @@ def classify_tree_of_thoughts(verbatim, categories, minibatch_size = 6):
         classified_tones += classify_zero_shot(verbatim, to_classify)
     return classified_tones
 
+
+def classify_reflexion(verbatim, categories, nombreBoucle):
+    """
+    Utilise un mécanisme de réflexion pour classer les tonalités d'un texte.
+    Le processus est répété 'nombreBoucle' fois et le résultat avec le meilleur score,
+    évalué par un évaluateur (evaluator), est sélectionné.
+
+    Paramètres :
+      - verbatim : le texte à classifier.
+      - categories : la liste des catégories à classifier.
+      - nombreBoucle : le nombre d'itérations de réflexion à effectuer.
+
+    Retourne :
+      - La meilleure classification (liste de tonalités) obtenue.
+    """
+    # Récupération du prompt de base depuis le fichier "actor.txt", en remplaçant <verbatim> par le texte.
+    actor_prompt = file_to_str("actor.txt", {"<verbatim>": verbatim})
+
+    best_classification = None
+    best_score = -1  # On suppose que le score est dans une plage positive (par exemple de 0 à 100).
+
+    # Boucle de réflexion sur le nombre d'itérations défini
+    for i in range(nombreBoucle):
+        # Construction du prompt courant : ici, on traite toutes les catégories en une fois.
+        # Les parties déjà classifiées sont vides dans ce cas (on pourrait les remplir si nécessaire).
+        current_prompt = substitute(actor_prompt, {
+            "<already-classified>": list_to_JSON([], []),  # Pas de classification préalable
+            "<categories>": list_to_JSON(categories)         # Toutes les catégories à classifier
+        })
+
+        # 1. Classification initiale : appel de la fonction 'classify' pour obtenir les tonalités
+        current_classification = classify(current_prompt, categories)
+
+        # 2. Evaluation : on utilise le fichier evaluator.txt pour évaluer la classification actuelle
+        evaluator_prompt = file_to_str("evaluator.txt", {
+            "<verbatim>": verbatim,
+            "<categories>": list_to_JSON(categories),
+            "<classified>": list_to_JSON(categories, current_classification)
+        })
+        evaluator_response = LLM_query(evaluator_prompt, is_json=True)
+        # On s'attend à ce que evaluator_response soit un objet JSON contenant par exemple "score" et "feedback"
+        score = evaluator_response.get("score", 0)
+
+        # 3. Auto-réflexion (self-reflexion) : on demande au modèle de réfléchir sur sa classification
+        # en se basant sur le feedback de l'évaluateur
+        self_reflection_prompt = file_to_str("self-reflexion.txt", {
+            "<verbatim>": verbatim,
+            "<categories>": list_to_JSON(categories),
+            "<classified>": list_to_JSON(categories, current_classification),
+            "<evaluation_feedback>": evaluator_response.get("feedback", ""),
+            "<evaluation_score>": str(score)
+        })
+        self_reflection_feedback = LLM_query(self_reflection_prompt)
+        # Ici, self_reflection_feedback fournit des suggestions d'amélioration.
+        # On pourrait analyser ces suggestions pour améliorer current_classification, mais pour cet exemple
+        # nous gardons directement le résultat initial.
+
+        # Si le score de cette itération est supérieur au meilleur score obtenu, on met à jour le meilleur résultat.
+        if score > best_score:
+            best_score = score
+            best_classification = current_classification
+
+    return best_classification
+
+
+
 def classification_pipeline():
     """The main function of the classification pipeline.
 

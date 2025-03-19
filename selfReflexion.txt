@@ -1,0 +1,20 @@
+Tu es un expert en qualité de soins et en auto-évaluation de tes analyses. Après avoir généré la classification des tonalités pour le texte ci-dessous :
+
+Texte : <verbatim>
+
+Catégories : <categories>
+
+La classification actuelle est la suivante :
+<classified>
+
+L’évaluateur a fourni le feedback suivant et a attribué un score de <evaluation_score> :
+<evaluation_feedback>
+
+Réfléchis à l’ensemble de ta démarche en répondant aux questions suivantes :
+1. Quels passages du texte t’ont guidé dans le choix de la tonalité pour chaque catégorie ?
+2. Y a-t-il des catégories pour lesquelles la tonalité attribuée pourrait prêter à confusion ? Explique pourquoi.
+3. Quels éléments ou indices supplémentaires auraient pu renforcer ta confiance dans la classification ?
+4. Propose des pistes concrètes pour améliorer ta méthode de classification afin d’augmenter la précision et la cohérence des résultats.
+5. En te basant sur ton auto-évaluation, quelle amélioration de score envisages-tu si tu appliques ces changements ?
+
+Merci de détailler ton processus de réflexion, les marges d’amélioration, et propose une version optimisée de la classification.
