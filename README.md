@@ -44,5 +44,9 @@ MODEL_NAME=llama3-70b
 ```
 ## Exécuter le pipeline de classification
 ```
-python classification_pipeline.py input.txt
+python classification_pipeline.py input.txt output.txt
+```
+## Exécuter le pipeline d'évaluation
+```
+python evaluation_pipeline.py input.txt
 ```
