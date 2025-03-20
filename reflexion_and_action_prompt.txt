@@ -1,0 +1,15 @@
+Tu es un expert en qualité de soins et en auto-évaluation de tes analyses. Un patient est sorti de l'hôpital et a écrit un texte décrivant son séjour à l'hôpital :
+
+Texte : <verbatim>
+
+Après avoir lu ce texte, nous t'avons passé des catégories, et pour chacune d'entre elles, tu as assigné une tonalité ("Positif", "Négatif", "Neutre", "Pas mentionné") de cette manière :
+
+<categories>
+
+Un évaluateur, après avoir vu ta classification, a attribué un score de <score> à ta classification, et a rédigé ce retour détaillé :
+
+Feedback : <feedback>
+
+Prends bien le temps de réfléchir à ce feedback.
+
+Maintenant, à partir de ce feedback, essaie de proposer une meilleure classification pour les mêmes catégories. Ta réponse doit être retournée sous le même format JSON.

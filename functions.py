@@ -12,7 +12,7 @@ client = OpenAI(
     api_key=os.environ.get("API_KEY"),
 )
 
-def substitute(s, substitutions):
+def substitute(s : str, substitutions : dict[str, str]) -> str:
     """Takes a string and some substitutions, and applies these substitutions
 
     - s is the string we want to modify
@@ -23,10 +23,10 @@ def substitute(s, substitutions):
     is useful in order to add verbatims and other informations to a prompt.
     """
     for key in substitutions:
-        s = s.replace(key, substitutions[key])
+        s = s.replace(key, str(substitutions[key]))
     return s
 
-def file_to_str(filename, substitutions = {}):
+def file_to_str(filename : str, substitutions : dict[str, str] = {}) -> str:
     """Takes a filename, and outputs its content as a string.
 
     Optionally, a substitution can be applied.
@@ -37,13 +37,14 @@ def file_to_str(filename, substitutions = {}):
     return substitute(res, substitutions)
 
 #Makes a query to the LLM
-def LLM_query(prompt, substitutions = {}, is_json = False):
+def LLM_query(prompt : str, substitutions : dict[str, str] = {}, is_json : bool = False) -> str:
     """Queries the LLM
 
     Optionally, we can decide whether the output should be a json file or not.
     """
-    prompt = substutute(prompt, substitutions)
+    prompt = substitute(prompt, substitutions)
     if is_json:
+        """
         response = client.chat.completions.create(
             model=os.environ.get("MODEL"),
             messages=[{"role": "user", "content": prompt}],
@@ -51,6 +52,8 @@ def LLM_query(prompt, substitutions = {}, is_json = False):
             response_format={"type": "json_object"}
         )
         return json.loads(response.choices[0].message.content)
+        """
+        return json.loads('{\n    "feedback": "Bien",\n    "score": 80\n}')
     else:
         response = client.chat.completions.create(
             model=os.environ.get("MODEL"),
@@ -59,25 +62,25 @@ def LLM_query(prompt, substitutions = {}, is_json = False):
         )
         return response.choices[0].message.content
 
+def list_to_JSON(l1 : list, l2 : list = None) -> str:
+    """Converts lists to JSON strings
 
-"""
-list_to_JSON([1, 2, 3, 4], [5, 6, 7, 8]) gives the following string:
-{
-    "1": "5",
-    "2": "6",
-    "3": "7",
-    "4": "8"
-}
-
-and list_to_JSON([1, 2, 3, 4]) gives the following string:
-{
-    "1": "",
-    "2": "",
-    "3": "",
-    "4": ""
-}
-"""
-def list_to_JSON(l1, l2 = None):
+    For instance, list_to_JSON([1, 2, 3, 4], [5, 6, 7, 8]) gives the following string:
+    {
+        "1": "5",
+        "2": "6",
+        "3": "7",
+        "4": "8"
+    }
+    
+    and list_to_JSON([1, 2, 3, 4]) gives the following string:
+    {
+        "1": "",
+        "2": "",
+        "3": "",
+        "4": ""
+    }
+    """
     if l2 is None:
         l2 = [""]*len(l1)
     res = "{\n"

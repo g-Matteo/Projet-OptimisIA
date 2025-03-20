@@ -1,8 +1,10 @@
 import sys
 from functions import *
 from classification_pipeline import *
+from time import time
+import krippendorff
 
-def get_verbatims_and_tones(filename):
+def get_verbatims_and_tones(filename : str) -> list[tuple[str, list[str]]]:
     """Returns a list of (verbatim, tones) which have previously been generated via verbatim-generator.py
 
     This function takes a filename as an input. TAn example of such filename is "generated_verbatims.txt"
@@ -19,6 +21,16 @@ def get_verbatims_and_tones(filename):
             res.append((verbatim, tones))
     return res
 
+def to_number(s : str) -> int:
+    """This function converts a tone into a number
+    
+    "Positif"       -> 0
+    "Négatif"       -> 1
+    "Neutre"        -> 2
+    "Pas mentionné" -> 3
+    """
+    return ["Positif", "Négatif", "Neutre", "Pas mentionné"].index(s)
+
 def evaluation_pipeline():
     """The main function of the evaluation pipeline.
 
@@ -34,18 +46,28 @@ def evaluation_pipeline():
 
     categories = list(json.loads(file_to_str("categories.json")).keys())
 
+
     #for each classification technique
-    for classification_method, name_of_method in zip([classify_zero_shot, classify_prompt_chaining, classify_tree_of_thoughts], ["Zero-Shot", "Prompt Chaining", "Tree of Thoughts"]):
+    for classification_method, name_of_method in zip([classify_zero_shot, classify_prompt_chaining, classify_tree_of_thoughts, classify_reflexion], ["Zero-Shot", "Prompt Chaining", "Tree of Thoughts", "Reflexion"]):
         sum_hallucination_rates = 0
         sum_precision_rates = 0
         sum_recall_rates = 0
+        time_taken = 0
+        list_classified_tones = [[], []]
         nb_verbatims = 0
+
+        
 
         #For each verbatim and its gold standard (its real tones)
         for verbatim, tones in get_verbatims_and_tones(sys.argv[1]):
             nb_verbatims += 1
-            #We ask the LLM to classify according to the current classification method
+            #We ask the LLM to classify according to the current classification method (while measuring the time)
+            t0 = time()
             classified_tones = classification_method(verbatim, categories)
+            t1 = time()
+            time_taken += t1 - t0
+            #We store it (it will be useful to compute Krippendorff's alpha
+            list_classified_tones[0] += map(to_number, classified_tones)
 
             #We count the number of "Positif", "Pas mentionné", "Négatif", "Neutre" that have been well classified
             well_classified = {key: 0 for key in ["Positif", "Pas mentionné", "Négatif", "Neutre"]}
@@ -71,9 +93,20 @@ def evaluation_pipeline():
             sum_recall_rates += recall_rate
             sum_hallucination_rates += hallucination_rate
 
+        #We evaluate a second time every verbatim to compute Krippendorff's alpha
+        #We also use this opportunity to measure the time a second time to have a better approximation
+        for verbatim, tones in get_verbatims_and_tones(sys.argv[1]):
+            t0 = time()
+            classified_tones = classification_method(verbatim, categories)
+            t1 = time()
+            time_taken += t1 - t0
+            list_classified_tones[1] += map(to_number, classified_tones)
+
         print(f"Precision of {name_of_method}: {sum_precision_rates / nb_verbatims}")
         print(f"Recall of {name_of_method}: {sum_recall_rates / nb_verbatims}")
         print(f"Hallucination rate of {name_of_method}: {sum_hallucination_rates / nb_verbatims}")
+        print(f"Krippendorff's alpha of {name_of_method}: {krippendorff.alpha(reliability_data=list_classified_tones, level_of_measurement="nominal")}")
+        print(f"Time taken for {name_of_method}: {time_taken/(2*nb_verbatims)}")
         print()
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 import sys
 from functions import *
 
-def verify_answer(generated_categories, generated_tones, categories):
+def verify_answer(generated_categories : list[str], generated_tones : list[str], categories : list[str]):
     """Takes lists of categories and tones, and the real categories, and checks that the answer is valid.
 
     When querying the LLM to get a json file, we must obtain a json whose keys are categories and whose
@@ -18,7 +18,7 @@ def verify_answer(generated_categories, generated_tones, categories):
         print("Error : LLM returned invalid tone")
         exit(1)
 
-def classify(prompt, categories, substutions = {}):
+def classify(prompt : str, categories : list[str], substutions : dict[str, str] = {}):
     """Queries the LLM to classify categories according to a prompt.
 
     It acts like LLM_query(), but it is made specifically for outputting
@@ -37,7 +37,7 @@ def classify(prompt, categories, substutions = {}):
     """
     return ['Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Négatif', 'Positif', 'Positif', 'Positif', 'Positif', 'Positif', 'Négatif', 'Positif', 'Positif', 'Positif', 'Pas mentionné', 'Négatif', 'Neutre', 'Positif', 'Négatif'][:len(categories)]
 
-def classify_zero_shot(verbatim, categories):
+def classify_zero_shot(verbatim : str, categories : list[str]) -> list[str]:
     """Uses a single prompt to query the LLM.
 
     The prompt can be found in "zero_shot_prompt.txt"
@@ -46,7 +46,7 @@ def classify_zero_shot(verbatim, categories):
     #Debug : print(prompt) 
     return classify(prompt, categories)
 
-def classify_prompt_chaining(verbatim, categories, minibatch_size = 5):
+def classify_prompt_chaining(verbatim : str, categories : list[str], minibatch_size : int = 5) -> list[str]:
     """Uses many prompts which each have a recap of the previous classifications.
 
     For instance, suppose the minibatch size is 5. Then prompt chaning starts by
@@ -69,7 +69,7 @@ def classify_prompt_chaining(verbatim, categories, minibatch_size = 5):
         already_classified += to_classify
     return classified_tones
 
-def classify_tree_of_thoughts(verbatim, categories, minibatch_size = 6):
+def classify_tree_of_thoughts(verbatim : str, categories : list[str], minibatch_size : int = 5) -> list[str]:
     """Works like prompt chaining, except that it doesn't have a recap of the previously classified categories."""
     classified_tones = []
     while len(classified_tones)<len(categories):
@@ -78,6 +78,58 @@ def classify_tree_of_thoughts(verbatim, categories, minibatch_size = 6):
         #We classify them in one prompt
         classified_tones += classify_zero_shot(verbatim, to_classify)
     return classified_tones
+
+def classify_reflexion(verbatim : str, categories : list[str], nb_loops : int = 2) -> list[str]:
+    """Uses reflexion to classify the verbatim. The process is repeated nb_loops times.
+    
+    It starts with a zero-shot prompt, but then we use another prompt to evaluate the
+    result with a score and a feedback comment. We then repeat the process by giving
+    the feedback to the LLM. The result is repeated nb_loops times, and the result with
+    the highest score is returned.
+
+    Pseudo-code:
+        Actor: classify like a zero-shot
+        repeat nb_loops times:
+            if it isn't the first iteration of the loop:
+                in the same prompt:
+                    Reflexion: think about the feedback and the score, and how to improve the classification
+                    Action: re-classify according to the score and feedback
+            Evaluation: evaluate the classification by giving a score and a feedback
+            keep only the classification with the highest score
+    
+    In this way, the steps "Action", "Reflexion", and "Evaluation" loop like so:
+        Action -> Evaluation -> Reflexion -> Action -> Evaluation -> Reflexion -> ... -> Action -> Evaluation
+
+    Parameters:
+      - verbatim: the text to classify.
+      - categories: the list of categories to classify.
+      - nb_loops: the number of iterations to make.
+
+    Returns:
+      - The best classification obtained.
+    """
+    #We start by doing a zero-shot prompt
+    classified_tones = classify_zero_shot(verbatim, categories)
+    #We get the prompts of "evaluation_prompt.txt" and "reflexion_prompt.txt"
+    evaluation_prompt = file_to_str("evaluation_prompt.txt", {"<verbatim>" : verbatim})
+    reflexion_and_action_prompt = file_to_str("reflexion_and_action_prompt.txt", {"<verbatim>" : verbatim})
+
+    best_classification, best_score = None, -1
+    for i in range(nb_loops):
+        #From the second iteration of the loop:
+        if i!=0:
+            #We use the feedback and the score and reflect on them, and we then re-classify.
+            classified_tones = classify(reflexion_and_action_prompt, categories, {"<categories>" : list_to_JSON(categories, classified_tones), "<feedback>" : feedback, "<score>" : score})
+        #Evaluation: we use the prompt of "evaluator_prompt.txt" to evaluate the current classification
+        evaluation_response = LLM_query(evaluation_prompt, {"<categories>" : list_to_JSON(categories, classified_tones)}, is_json=True)
+        #We get the feedback comment ("Pas de feedback." by default) and score (0 by default)
+        feedback, score = evaluation_response.get("feedback", "Pas de feedback."), evaluation_response.get("score", 0)
+        #We keep only the best result
+        if best_score < score:
+            best_score = score
+            best_classification = classified_tones
+        
+    return best_classification
 
 def classification_pipeline():
     """The main function of the classification pipeline.
