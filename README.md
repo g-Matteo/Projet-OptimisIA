@@ -1,52 +1,72 @@
 # Projet-OptimisIA
 
-## Installer poetry
+## Install poetry
 ```
 curl -sSL https://install.python-poetry.org | python3 -
 ```
 
-## Ajouter la poubelle de poetry à $PATH
+## Add poetry to $PATH
 ```
 PATH=$PATH:/home/ubuntu/.local/bin
 ```
 
-## Installer venv pour faire des environnements virtuels
+## Install venv to use virtual environments
 ```
 sudo apt install python3.12-venv
 ```
 
-## Créer un environnement virtuel pour faire les importations pip
+## Create an environment to use pip importations
 ```
 python3 -m venv .venv
+```
+We need to activate the environment before launching any code:
+```
 source .venv/bin/activate
 ```
 
-## installer dotenv
+## Install dotenv
 ```
 python3 -m pip install python-dotenv
 ```
 
-## Installer openai
+## Install openai
 ```
 python3 -m pip install openai
 ```
 
-## Installer jsonschema
+## Install jsonschema
 ```
 python3 -m pip install jsonschema
 ```
 
-## Exemple de .env (à mettre dans la racine de ce dossier)
+## Example of .env (to put at the root of the folder)
 ```
 API_ENDPOINT=http://localhost:11434/v1/
 API_KEY=api-key
 MODEL_NAME=llama3-70b
 ```
-## Exécuter le pipeline de classification
+
+## Generate fake verbatims
+This program generates new verbatims and their real tones. The verbatims and their tones are appended to `generated_verbatims.txt`.
+```
+python generated_verbatims.py
+```
+
+## Launch the classification pipeline
+The program takes as an input two arguments:
+- The path of an input file, in which there is, for every line, a verbatim
+- The path of an output file, which will be overwritten with the corresponding classifications.
 ```
 python classification_pipeline.py input.txt output.txt
 ```
-## Exécuter le pipeline d'évaluation
+
+## Launch the evaluation pipeline
+This program takes as an input a single argument:
+- The path of an input file, which contains for each line a list of tones and a verbatim
+
+An example of input file can be found in `generated_verbatims.txt`
+
+The output will be given on the stdout. It will show metrics of all the prompt methods.
 ```
 python evaluation_pipeline.py input.txt
 ```
