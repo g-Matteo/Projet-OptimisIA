@@ -1,4 +1,8 @@
-"""This file contains the functions that are in common between the classification pipeline, the evaluation pipeline, and the verbatim generator"""
+"""
+This file contains the functions that are in common
+between theclassification pipeline, the evaluation
+pipeline, and the verbatim generator
+"""
 
 import os
 from openai import OpenAI
@@ -44,15 +48,13 @@ def LLM_query(prompt : str, substitutions : dict[str, str] = {}, is_json : bool 
     """
     prompt = substitute(prompt, substitutions)
     if is_json:
-        """
-        response = client.chat.completions.create(
-            model=os.environ.get("MODEL"),
-            messages=[{"role": "user", "content": prompt}],
-            stream=False,
-            response_format={"type": "json_object"}
-        )
-        return json.loads(response.choices[0].message.content)
-        """
+        #response = client.chat.completions.create(
+        #    model=os.environ.get("MODEL"),
+        #    messages=[{"role": "user", "content": prompt}],
+        #    stream=False,
+        #    response_format={"type": "json_object"}
+        #)
+        #return json.loads(response.choices[0].message.content)
         return json.loads('{\n    "feedback": "Bien",\n    "score": 80\n}')
     else:
         response = client.chat.completions.create(

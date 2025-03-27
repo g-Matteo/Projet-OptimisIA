@@ -29,12 +29,10 @@ def classify(prompt : str, categories : list[str], substutions : dict[str, str] 
     - categories is a list
     - substitutions is an optional dictionary (see substitute())
     """
-    """
-    JSON_dict = LLM_query(prompt, substitutions, is_json=True)
-    generated_categories, generated_tones = list(JSON_dict.keys()), list(JSON_dict.values())
-    verify_answer(generated_categories, generated_tones, categories)
-    return generated_tones
-    """
+    #JSON_dict = LLM_query(prompt, substitutions, is_json=True)
+    #generated_categories, generated_tones = list(JSON_dict.keys()), list(JSON_dict.values())
+    #verify_answer(generated_categories, generated_tones, categories)
+    #return generated_tones
     return ['Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Négatif', 'Positif', 'Positif', 'Positif', 'Positif', 'Positif', 'Négatif', 'Positif', 'Positif', 'Positif', 'Pas mentionné', 'Négatif', 'Neutre', 'Positif', 'Négatif'][:len(categories)]
 
 def classify_zero_shot(verbatim : str, categories : list[str]) -> list[str]:
@@ -88,14 +86,16 @@ def classify_reflexion(verbatim : str, categories : list[str], nb_loops : int = 
     the highest score is returned.
 
     Pseudo-code:
-        Actor: classify like a zero-shot
-        repeat nb_loops times:
-            if it isn't the first iteration of the loop:
-                in the same prompt:
-                    Reflexion: think about the feedback and the score, and how to improve the classification
-                    Action: re-classify according to the score and feedback
-            Evaluation: evaluate the classification by giving a score and a feedback
-            keep only the classification with the highest score
+    ```
+    Actor: classify like a zero-shot
+    repeat nb_loops times:
+        if it isn't the first iteration of the loop:
+            in the same prompt:
+                Reflexion: think about the feedback and the score, and how to improve the classification
+                Action: re-classify according to the score and feedback
+        Evaluation: evaluate the classification by giving a score and a feedback
+        keep only the classification with the highest score
+    ```
     
     In this way, the steps "Action", "Reflexion", and "Evaluation" loop like so:
         Action -> Evaluation -> Reflexion -> Action -> Evaluation -> Reflexion -> ... -> Action -> Evaluation

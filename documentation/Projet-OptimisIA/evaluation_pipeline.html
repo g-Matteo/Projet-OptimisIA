@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>Projet-OptimisIA.evaluation_pipeline API documentation</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>Projet-OptimisIA.evaluation_pipeline</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="Projet-OptimisIA.evaluation_pipeline.evaluation_pipeline"><code class="name flex">
+<span>def <span class="ident">evaluation_pipeline</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def evaluation_pipeline():
+    &#34;&#34;&#34;The main function of the evaluation pipeline.
+
+    This program takes as an input a single argument:
+    - The path of an input file, which contains for each line a list of tones and a verbatim
+
+    An example of input file can be found in &#34;generated_verbatims.txt&#34;
+
+    The output will be given on the stdout. It will show metrics of all the prompt methods.
+    &#34;&#34;&#34;
+    if len(sys.argv)!=2:
+        exit(f&#34;Usage: {sys.argv[0]} input_file.txt&#34;)
+
+    categories = list(json.loads(file_to_str(&#34;categories.json&#34;)).keys())
+
+
+    #for each classification technique
+    for classification_method, name_of_method in zip([classify_zero_shot, classify_prompt_chaining, classify_tree_of_thoughts, classify_reflexion], [&#34;Zero-Shot&#34;, &#34;Prompt Chaining&#34;, &#34;Tree of Thoughts&#34;, &#34;Reflexion&#34;]):
+        sum_hallucination_rates = 0
+        sum_precision_rates = 0
+        sum_recall_rates = 0
+        time_taken = 0
+        list_classified_tones = [[], []]
+        nb_verbatims = 0
+
+        
+
+        #For each verbatim and its gold standard (its real tones)
+        for verbatim, tones in get_verbatims_and_tones(sys.argv[1]):
+            nb_verbatims += 1
+            #We ask the LLM to classify according to the current classification method (while measuring the time)
+            t0 = time()
+            classified_tones = classification_method(verbatim, categories)
+            t1 = time()
+            time_taken += t1 - t0
+            #We store it (it will be useful to compute Krippendorff&#39;s alpha
+            list_classified_tones[0] += map(to_number, classified_tones)
+
+            #We count the number of &#34;Positif&#34;, &#34;Pas mentionné&#34;, &#34;Négatif&#34;, &#34;Neutre&#34; that have been well classified
+            well_classified = {key: 0 for key in [&#34;Positif&#34;, &#34;Pas mentionné&#34;, &#34;Négatif&#34;, &#34;Neutre&#34;]}
+            for i in range(len(well_classified)):
+                if classified_tones[i]==tones[i]:
+                    well_classified[tones[i]]+=1
+
+            #Hallucination rate :
+            #We count the number of hallucinations (the number of tones that have wrongly been classified as &#34;Pas mentionné&#34;), and we divide it by the number of categories (21)
+            hallucination_rate = (classified_tones.count(&#34;Pas mentionné&#34;) - well_classified[&#34;Pas mentionné&#34;]) / 21
+                  
+            #precision rate = (precision of &#34;Positif&#34; + ... + precision of &#34;Pas mentionné&#34;)/4
+            #precision of X = number of elements well classified as X / number of elements classified as X
+            precision_rate = sum(well_classified[key] / max(1, classified_tones.count(key)) for key in well_classified)/4
+            #The max() is to prevent division by zero
+
+            #recall rate = (recall of &#34;Positif&#34; + ... + recall of &#34;Pas mentionné&#34;)/4
+            #recall of X = number of elements well classified as X / number of elements belonging to X
+            recall_rate = sum(well_classified[key] / max(1, tones.count(key)) for key in well_classified)/4
+            #The max() is to prevent division by zero
+
+            sum_precision_rates += precision_rate
+            sum_recall_rates += recall_rate
+            sum_hallucination_rates += hallucination_rate
+
+        #We evaluate a second time every verbatim to compute Krippendorff&#39;s alpha
+        #We also use this opportunity to measure the time a second time to have a better approximation
+        for verbatim, tones in get_verbatims_and_tones(sys.argv[1]):
+            t0 = time()
+            classified_tones = classification_method(verbatim, categories)
+            t1 = time()
+            time_taken += t1 - t0
+            list_classified_tones[1] += map(to_number, classified_tones)
+
+        print(f&#34;Precision of {name_of_method}: {sum_precision_rates / nb_verbatims}&#34;)
+        print(f&#34;Recall of {name_of_method}: {sum_recall_rates / nb_verbatims}&#34;)
+        print(f&#34;Hallucination rate of {name_of_method}: {sum_hallucination_rates / nb_verbatims}&#34;)
+        print(f&#34;Krippendorff&#39;s alpha of {name_of_method}: {krippendorff.alpha(reliability_data=list_classified_tones, level_of_measurement=&#34;nominal&#34;)}&#34;)
+        print(f&#34;Time taken for {name_of_method}: {time_taken/(2*nb_verbatims)}&#34;)
+        print()</code></pre>
+</details>
+<div class="desc"><p>The main function of the evaluation pipeline.</p>
+<p>This program takes as an input a single argument:
+- The path of an input file, which contains for each line a list of tones and a verbatim</p>
+<p>An example of input file can be found in "generated_verbatims.txt"</p>
+<p>The output will be given on the stdout. It will show metrics of all the prompt methods.</p></div>
+</dd>
+<dt id="Projet-OptimisIA.evaluation_pipeline.get_verbatims_and_tones"><code class="name flex">
+<span>def <span class="ident">get_verbatims_and_tones</span></span>(<span>filename: str) ‑> list[tuple[str, list[str]]]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_verbatims_and_tones(filename : str) -&gt; list[tuple[str, list[str]]]:
+    &#34;&#34;&#34;Returns a list of (verbatim, tones) which have previously been generated via verbatim-generator.py
+
+    This function takes a filename as an input. TAn example of such filename is &#34;generated_verbatims.txt&#34;
+
+    More precisions for the output:
+    - verbatim is a string
+    - tones is a list which, for the i-th category, contains a value between &#34;Positif&#34;, &#34;Négatif&#34;, &#34;Pas mentionné&#34;, and &#34;Neutre&#34;
+    &#34;&#34;&#34;
+    res = []
+    with open(filename, &#34;r&#34;) as fd:
+        for line in fd.readlines():
+            verbatim = line[line.index(&#34;]&#34;)+1:]
+            tones = eval(line[:line.index(&#34;]&#34;)+1]) #TODO : Change this to a JSON instead
+            res.append((verbatim, tones))
+    return res</code></pre>
+</details>
+<div class="desc"><p>Returns a list of (verbatim, tones) which have previously been generated via verbatim-generator.py</p>
+<p>This function takes a filename as an input. TAn example of such filename is "generated_verbatims.txt"</p>
+<p>More precisions for the output:
+- verbatim is a string
+- tones is a list which, for the i-th category, contains a value between "Positif", "Négatif", "Pas mentionné", and "Neutre"</p></div>
+</dd>
+<dt id="Projet-OptimisIA.evaluation_pipeline.to_number"><code class="name flex">
+<span>def <span class="ident">to_number</span></span>(<span>s: str) ‑> int</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_number(s : str) -&gt; int:
+    &#34;&#34;&#34;This function converts a tone into a number
+    
+    &#34;Positif&#34;       -&gt; 0
+    &#34;Négatif&#34;       -&gt; 1
+    &#34;Neutre&#34;        -&gt; 2
+    &#34;Pas mentionné&#34; -&gt; 3
+    &#34;&#34;&#34;
+    return [&#34;Positif&#34;, &#34;Négatif&#34;, &#34;Neutre&#34;, &#34;Pas mentionné&#34;].index(s)</code></pre>
+</details>
+<div class="desc"><p>This function converts a tone into a number</p>
+<p>"Positif"
+-&gt; 0
+"Négatif"
+-&gt; 1
+"Neutre"
+-&gt; 2
+"Pas mentionné" -&gt; 3</p></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="Projet-OptimisIA" href="index.html">Projet-OptimisIA</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="Projet-OptimisIA.evaluation_pipeline.evaluation_pipeline" href="#Projet-OptimisIA.evaluation_pipeline.evaluation_pipeline">evaluation_pipeline</a></code></li>
+<li><code><a title="Projet-OptimisIA.evaluation_pipeline.get_verbatims_and_tones" href="#Projet-OptimisIA.evaluation_pipeline.get_verbatims_and_tones">get_verbatims_and_tones</a></code></li>
+<li><code><a title="Projet-OptimisIA.evaluation_pipeline.to_number" href="#Projet-OptimisIA.evaluation_pipeline.to_number">to_number</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>Projet-OptimisIA.classification_pipeline API documentation</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>Projet-OptimisIA.classification_pipeline</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="Projet-OptimisIA.classification_pipeline.classification_pipeline"><code class="name flex">
+<span>def <span class="ident">classification_pipeline</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def classification_pipeline():
+    &#34;&#34;&#34;The main function of the classification pipeline.
+
+    The program takes as an input two arguments:
+    - The path of an input file, in which there is, for every line, a verbatim
+    - The path of an output file, which will be overwritten with the corresponding classifications.
+
+    An example of input file can be found in &#34;verbatims_to_classify.txt&#34;
+    &#34;&#34;&#34;
+    if len(sys.argv)!=3:
+        exit(f&#34;Usage: {sys.argv[0]} input_file.txt output_file.txt&#34;)
+        
+    categories = list(json.loads(file_to_str(&#34;categories.json&#34;)).keys())
+
+    #Read the input file
+    verbatims = None
+    with open(sys.argv[1], &#34;r&#34;) as fd:
+        verbatims = fd.readlines()
+
+    #Write the classifications in the output file
+    with open(sys.argv[2], &#34;w&#34;) as fd:
+        for verbatim in verbatims:
+            fd.write(f&#34;{classify_prompt_chaining(verbatim, categories)}\n&#34;)</code></pre>
+</details>
+<div class="desc"><p>The main function of the classification pipeline.</p>
+<p>The program takes as an input two arguments:
+- The path of an input file, in which there is, for every line, a verbatim
+- The path of an output file, which will be overwritten with the corresponding classifications.</p>
+<p>An example of input file can be found in "verbatims_to_classify.txt"</p></div>
+</dd>
+<dt id="Projet-OptimisIA.classification_pipeline.classify"><code class="name flex">
+<span>def <span class="ident">classify</span></span>(<span>prompt: str, categories: list[str], substutions: dict[str, str] = {})</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def classify(prompt : str, categories : list[str], substutions : dict[str, str] = {}):
+    &#34;&#34;&#34;Queries the LLM to classify categories according to a prompt.
+
+    It acts like LLM_query(), but it is made specifically for outputting
+    json format. This function, after calling LLM_query(), verifies the
+    values in the json before outputting it as a python list of strings.
+
+    - prompt is a string
+    - categories is a list
+    - substitutions is an optional dictionary (see substitute())
+    &#34;&#34;&#34;
+    #JSON_dict = LLM_query(prompt, substitutions, is_json=True)
+    #generated_categories, generated_tones = list(JSON_dict.keys()), list(JSON_dict.values())
+    #verify_answer(generated_categories, generated_tones, categories)
+    #return generated_tones
+    return [&#39;Positif&#39;, &#39;Positif&#39;, &#39;Neutre&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Négatif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Négatif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Pas mentionné&#39;, &#39;Négatif&#39;, &#39;Neutre&#39;, &#39;Positif&#39;, &#39;Négatif&#39;][:len(categories)]</code></pre>
+</details>
+<div class="desc"><p>Queries the LLM to classify categories according to a prompt.</p>
+<p>It acts like LLM_query(), but it is made specifically for outputting
+json format. This function, after calling LLM_query(), verifies the
+values in the json before outputting it as a python list of strings.</p>
+<ul>
+<li>prompt is a string</li>
+<li>categories is a list</li>
+<li>substitutions is an optional dictionary (see substitute())</li>
+</ul></div>
+</dd>
+<dt id="Projet-OptimisIA.classification_pipeline.classify_prompt_chaining"><code class="name flex">
+<span>def <span class="ident">classify_prompt_chaining</span></span>(<span>verbatim: str, categories: list[str], minibatch_size: int = 5) ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def classify_prompt_chaining(verbatim : str, categories : list[str], minibatch_size : int = 5) -&gt; list[str]:
+    &#34;&#34;&#34;Uses many prompts which each have a recap of the previous classifications.
+
+    For instance, suppose the minibatch size is 5. Then prompt chaning starts by
+    giving 5 categories to classify It then gives the five next, with a recap of
+    what it did for the already classified categories. And so on until every
+    category is classified.
+
+    The prompt can be found in &#34;prompt_chaining_prompt.txt&#34;
+    &#34;&#34;&#34;
+    prompt = file_to_str(&#34;prompt_chaining_prompt.txt&#34;, {&#34;&lt;verbatim&gt;&#34; : verbatim})
+    already_classified = []
+    classified_tones = []
+    while len(classified_tones)&lt;len(categories):
+        #We get the next categories to classify
+        to_classify = categories[len(classified_tones):len(classified_tones) + minibatch_size]
+        #We classify them in one prompt which also contains the already classified categories
+        #Debug: print(substitute(prompt, {&#34;&lt;already_classified&gt;&#34;: list_to_JSON(already_classified, classified_tones), &#34;&lt;to-classify&gt;&#34;: list_to_JSON(to_classify)}))
+        classified_tones += classify(prompt, to_classify, {&#34;&lt;already_classified&gt;&#34;: list_to_JSON(already_classified, classified_tones), &#34;&lt;to-classify&gt;&#34;: list_to_JSON(to_classify)})
+        #We add them to the already classified categories
+        already_classified += to_classify
+    return classified_tones</code></pre>
+</details>
+<div class="desc"><p>Uses many prompts which each have a recap of the previous classifications.</p>
+<p>For instance, suppose the minibatch size is 5. Then prompt chaning starts by
+giving 5 categories to classify It then gives the five next, with a recap of
+what it did for the already classified categories. And so on until every
+category is classified.</p>
+<p>The prompt can be found in "prompt_chaining_prompt.txt"</p></div>
+</dd>
+<dt id="Projet-OptimisIA.classification_pipeline.classify_reflexion"><code class="name flex">
+<span>def <span class="ident">classify_reflexion</span></span>(<span>verbatim: str, categories: list[str], nb_loops: int = 2) ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def classify_reflexion(verbatim : str, categories : list[str], nb_loops : int = 2) -&gt; list[str]:
+    &#34;&#34;&#34;Uses reflexion to classify the verbatim. The process is repeated nb_loops times.
+    
+    It starts with a zero-shot prompt, but then we use another prompt to evaluate the
+    result with a score and a feedback comment. We then repeat the process by giving
+    the feedback to the LLM. The result is repeated nb_loops times, and the result with
+    the highest score is returned.
+
+    Pseudo-code:
+    ```
+    Actor: classify like a zero-shot
+    repeat nb_loops times:
+        if it isn&#39;t the first iteration of the loop:
+            in the same prompt:
+                Reflexion: think about the feedback and the score, and how to improve the classification
+                Action: re-classify according to the score and feedback
+        Evaluation: evaluate the classification by giving a score and a feedback
+        keep only the classification with the highest score
+    ```
+    
+    In this way, the steps &#34;Action&#34;, &#34;Reflexion&#34;, and &#34;Evaluation&#34; loop like so:
+        Action -&gt; Evaluation -&gt; Reflexion -&gt; Action -&gt; Evaluation -&gt; Reflexion -&gt; ... -&gt; Action -&gt; Evaluation
+
+    Parameters:
+      - verbatim: the text to classify.
+      - categories: the list of categories to classify.
+      - nb_loops: the number of iterations to make.
+
+    Returns:
+      - The best classification obtained.
+    &#34;&#34;&#34;
+    #We start by doing a zero-shot prompt
+    classified_tones = classify_zero_shot(verbatim, categories)
+    #We get the prompts of &#34;evaluation_prompt.txt&#34; and &#34;reflexion_prompt.txt&#34;
+    evaluation_prompt = file_to_str(&#34;evaluation_prompt.txt&#34;, {&#34;&lt;verbatim&gt;&#34; : verbatim})
+    reflexion_and_action_prompt = file_to_str(&#34;reflexion_and_action_prompt.txt&#34;, {&#34;&lt;verbatim&gt;&#34; : verbatim})
+
+    best_classification, best_score = None, -1
+    for i in range(nb_loops):
+        #From the second iteration of the loop:
+        if i!=0:
+            #We use the feedback and the score and reflect on them, and we then re-classify.
+            classified_tones = classify(reflexion_and_action_prompt, categories, {&#34;&lt;categories&gt;&#34; : list_to_JSON(categories, classified_tones), &#34;&lt;feedback&gt;&#34; : feedback, &#34;&lt;score&gt;&#34; : score})
+        #Evaluation: we use the prompt of &#34;evaluator_prompt.txt&#34; to evaluate the current classification
+        evaluation_response = LLM_query(evaluation_prompt, {&#34;&lt;categories&gt;&#34; : list_to_JSON(categories, classified_tones)}, is_json=True)
+        #We get the feedback comment (&#34;Pas de feedback.&#34; by default) and score (0 by default)
+        feedback, score = evaluation_response.get(&#34;feedback&#34;, &#34;Pas de feedback.&#34;), evaluation_response.get(&#34;score&#34;, 0)
+        #We keep only the best result
+        if best_score &lt; score:
+            best_score = score
+            best_classification = classified_tones
+        
+    return best_classification</code></pre>
+</details>
+<div class="desc"><p>Uses reflexion to classify the verbatim. The process is repeated nb_loops times.</p>
+<p>It starts with a zero-shot prompt, but then we use another prompt to evaluate the
+result with a score and a feedback comment. We then repeat the process by giving
+the feedback to the LLM. The result is repeated nb_loops times, and the result with
+the highest score is returned.</p>
+<p>Pseudo-code:</p>
+<pre><code>Actor: classify like a zero-shot
+repeat nb_loops times:
+    if it isn't the first iteration of the loop:
+        in the same prompt:
+            Reflexion: think about the feedback and the score, and how to improve the classification
+            Action: re-classify according to the score and feedback
+    Evaluation: evaluate the classification by giving a score and a feedback
+    keep only the classification with the highest score
+</code></pre>
+<p>In this way, the steps "Action", "Reflexion", and "Evaluation" loop like so:
+Action -&gt; Evaluation -&gt; Reflexion -&gt; Action -&gt; Evaluation -&gt; Reflexion -&gt; &hellip; -&gt; Action -&gt; Evaluation</p>
+<h2 id="parameters">Parameters</h2>
+<ul>
+<li>verbatim: the text to classify.</li>
+<li>categories: the list of categories to classify.</li>
+<li>nb_loops: the number of iterations to make.</li>
+</ul>
+<h2 id="returns">Returns</h2>
+<ul>
+<li>The best classification obtained.</li>
+</ul></div>
+</dd>
+<dt id="Projet-OptimisIA.classification_pipeline.classify_tree_of_thoughts"><code class="name flex">
+<span>def <span class="ident">classify_tree_of_thoughts</span></span>(<span>verbatim: str, categories: list[str], minibatch_size: int = 5) ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def classify_tree_of_thoughts(verbatim : str, categories : list[str], minibatch_size : int = 5) -&gt; list[str]:
+    &#34;&#34;&#34;Works like prompt chaining, except that it doesn&#39;t have a recap of the previously classified categories.&#34;&#34;&#34;
+    classified_tones = []
+    while len(classified_tones)&lt;len(categories):
+        #We get the next categories to classify
+        to_classify = categories[len(classified_tones):len(classified_tones) + minibatch_size]
+        #We classify them in one prompt
+        classified_tones += classify_zero_shot(verbatim, to_classify)
+    return classified_tones</code></pre>
+</details>
+<div class="desc"><p>Works like prompt chaining, except that it doesn't have a recap of the previously classified categories.</p></div>
+</dd>
+<dt id="Projet-OptimisIA.classification_pipeline.classify_zero_shot"><code class="name flex">
+<span>def <span class="ident">classify_zero_shot</span></span>(<span>verbatim: str, categories: list[str]) ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def classify_zero_shot(verbatim : str, categories : list[str]) -&gt; list[str]:
+    &#34;&#34;&#34;Uses a single prompt to query the LLM.
+
+    The prompt can be found in &#34;zero_shot_prompt.txt&#34;
+    &#34;&#34;&#34;
+    prompt = file_to_str(&#34;zero_shot_prompt.txt&#34;, {&#34;&lt;verbatim&gt;&#34; : verbatim, &#34;&lt;categories&gt;&#34;: list_to_JSON(categories)})
+    #Debug : print(prompt) 
+    return classify(prompt, categories)</code></pre>
+</details>
+<div class="desc"><p>Uses a single prompt to query the LLM.</p>
+<p>The prompt can be found in "zero_shot_prompt.txt"</p></div>
+</dd>
+<dt id="Projet-OptimisIA.classification_pipeline.verify_answer"><code class="name flex">
+<span>def <span class="ident">verify_answer</span></span>(<span>generated_categories: list[str],<br>generated_tones: list[str],<br>categories: list[str])</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def verify_answer(generated_categories : list[str], generated_tones : list[str], categories : list[str]):
+    &#34;&#34;&#34;Takes lists of categories and tones, and the real categories, and checks that the answer is valid.
+
+    When querying the LLM to get a json file, we must obtain a json whose keys are categories and whose
+    values are tones. This function ensures that the json file indeed has valid keys and values.
+
+    - generated_categories is a list of strings
+    - generated_tones is a list of strings
+    - categories is a list of strings
+    &#34;&#34;&#34;
+    if generated_categories != categories:
+        print(&#34;Error : LLM returned invalid category&#34;)
+        exit(1)
+    if any(tone not in [&#34;Positif&#34;, &#34;Négatif&#34;, &#34;Neutre&#34;, &#34;Pas mentionné&#34;] for tone in tones):
+        print(&#34;Error : LLM returned invalid tone&#34;)
+        exit(1)</code></pre>
+</details>
+<div class="desc"><p>Takes lists of categories and tones, and the real categories, and checks that the answer is valid.</p>
+<p>When querying the LLM to get a json file, we must obtain a json whose keys are categories and whose
+values are tones. This function ensures that the json file indeed has valid keys and values.</p>
+<ul>
+<li>generated_categories is a list of strings</li>
+<li>generated_tones is a list of strings</li>
+<li>categories is a list of strings</li>
+</ul></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="Projet-OptimisIA" href="index.html">Projet-OptimisIA</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="Projet-OptimisIA.classification_pipeline.classification_pipeline" href="#Projet-OptimisIA.classification_pipeline.classification_pipeline">classification_pipeline</a></code></li>
+<li><code><a title="Projet-OptimisIA.classification_pipeline.classify" href="#Projet-OptimisIA.classification_pipeline.classify">classify</a></code></li>
+<li><code><a title="Projet-OptimisIA.classification_pipeline.classify_prompt_chaining" href="#Projet-OptimisIA.classification_pipeline.classify_prompt_chaining">classify_prompt_chaining</a></code></li>
+<li><code><a title="Projet-OptimisIA.classification_pipeline.classify_reflexion" href="#Projet-OptimisIA.classification_pipeline.classify_reflexion">classify_reflexion</a></code></li>
+<li><code><a title="Projet-OptimisIA.classification_pipeline.classify_tree_of_thoughts" href="#Projet-OptimisIA.classification_pipeline.classify_tree_of_thoughts">classify_tree_of_thoughts</a></code></li>
+<li><code><a title="Projet-OptimisIA.classification_pipeline.classify_zero_shot" href="#Projet-OptimisIA.classification_pipeline.classify_zero_shot">classify_zero_shot</a></code></li>
+<li><code><a title="Projet-OptimisIA.classification_pipeline.verify_answer" href="#Projet-OptimisIA.classification_pipeline.verify_answer">verify_answer</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>
