@@ -1,16 +1,7 @@
 # Projet-OptimisIA
 
-## Install poetry
-```
-curl -sSL https://install.python-poetry.org | python3 -
-```
 
-## Add poetry to $PATH
-```
-PATH=$PATH:/home/ubuntu/.local/bin
-```
-
-## Install venv to use virtual environments
+## Install venv to use virtual environments (example with apt package manager)
 ```
 sudo apt install python3.12-venv
 ```
@@ -24,19 +15,9 @@ We need to activate the environment before launching any code:
 source .venv/bin/activate
 ```
 
-## Install dotenv
+## Install dependencies
 ```
-python3 -m pip install python-dotenv
-```
-
-## Install openai
-```
-python3 -m pip install openai
-```
-
-## Install jsonschema
-```
-python3 -m pip install jsonschema
+python3 -m pip install -r requirements.txt
 ```
 
 ## Example of .env (to put at the root of the folder)
@@ -49,7 +30,7 @@ MODEL_NAME=llama3-70b
 ## Generate fake verbatims
 This program generates new verbatims and their real tones. The verbatims and their tones are appended to `generated_verbatims.txt`.
 ```
-python generated_verbatims.py
+python verbatim_generator.py
 ```
 
 ## Launch the classification pipeline
