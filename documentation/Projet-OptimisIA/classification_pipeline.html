@@ -55,11 +55,13 @@ el.replaceWith(d);
 <pre><code class="python">def classification_pipeline():
     &#34;&#34;&#34;The main function of the classification pipeline.
 
-    The program takes as an input two arguments:
+    The classification pipeline uses prompt chaining.
+
+    The program takes as input two arguments:
     - The path of an input file, in which there is, for every line, a verbatim
     - The path of an output file, which will be overwritten with the corresponding classifications.
 
-    An example of input file can be found in &#34;verbatims_to_classify.txt&#34;
+    An example of input file can be found in &#34;prompts/verbatims_to_classify.txt&#34;
     &#34;&#34;&#34;
     if len(sys.argv)!=3:
         exit(f&#34;Usage: {sys.argv[0]} input_file.txt output_file.txt&#34;)
@@ -77,40 +79,47 @@ el.replaceWith(d);
             fd.write(f&#34;{classify_prompt_chaining(verbatim, categories)}\n&#34;)</code></pre>
 </details>
 <div class="desc"><p>The main function of the classification pipeline.</p>
-<p>The program takes as an input two arguments:
+<p>The classification pipeline uses prompt chaining.</p>
+<p>The program takes as input two arguments:
 - The path of an input file, in which there is, for every line, a verbatim
 - The path of an output file, which will be overwritten with the corresponding classifications.</p>
-<p>An example of input file can be found in "verbatims_to_classify.txt"</p></div>
+<p>An example of input file can be found in "prompts/verbatims_to_classify.txt"</p></div>
 </dd>
 <dt id="Projet-OptimisIA.classification_pipeline.classify"><code class="name flex">
-<span>def <span class="ident">classify</span></span>(<span>prompt: str, categories: list[str], substutions: dict[str, str] = {})</span>
+<span>def <span class="ident">classify</span></span>(<span>prompt: str, categories: list[str], substitutions: dict[str, str] = {})</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def classify(prompt : str, categories : list[str], substutions : dict[str, str] = {}):
+<pre><code class="python">def classify(prompt : str, categories : list[str], substitutions : dict[str, str] = {}):
     &#34;&#34;&#34;Queries the LLM to classify categories according to a prompt.
 
     It acts like LLM_query(), but it is made specifically for outputting
     json format. This function, after calling LLM_query(), verifies the
     values in the json before outputting it as a python list of strings.
+    If the values in the json aren&#39;t valid, it repeats.
 
     - prompt is a string
     - categories is a list
     - substitutions is an optional dictionary (see substitute())
     &#34;&#34;&#34;
-    #JSON_dict = LLM_query(prompt, substitutions, is_json=True)
-    #generated_categories, generated_tones = list(JSON_dict.keys()), list(JSON_dict.values())
-    #verify_answer(generated_categories, generated_tones, categories)
-    #return generated_tones
-    return [&#39;Positif&#39;, &#39;Positif&#39;, &#39;Neutre&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Négatif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Négatif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Positif&#39;, &#39;Pas mentionné&#39;, &#39;Négatif&#39;, &#39;Neutre&#39;, &#39;Positif&#39;, &#39;Négatif&#39;][:len(categories)]</code></pre>
+    repeat = True
+    print(prompt)
+    while repeat:
+        JSON_dict = LLM_query(prompt, substitutions, is_json=True)
+        generated_categories, generated_tones = list(JSON_dict.keys()), list(JSON_dict.values())
+        repeat = not(verify_answer(generated_categories, generated_tones, categories))
+        print(&#34;retry&#34; if repeat else &#34;ok&#34;)
+
+    return generated_tones</code></pre>
 </details>
 <div class="desc"><p>Queries the LLM to classify categories according to a prompt.</p>
 <p>It acts like LLM_query(), but it is made specifically for outputting
 json format. This function, after calling LLM_query(), verifies the
-values in the json before outputting it as a python list of strings.</p>
+values in the json before outputting it as a python list of strings.
+If the values in the json aren't valid, it repeats.</p>
 <ul>
 <li>prompt is a string</li>
 <li>categories is a list</li>
@@ -118,14 +127,14 @@ values in the json before outputting it as a python list of strings.</p>
 </ul></div>
 </dd>
 <dt id="Projet-OptimisIA.classification_pipeline.classify_prompt_chaining"><code class="name flex">
-<span>def <span class="ident">classify_prompt_chaining</span></span>(<span>verbatim: str, categories: list[str], minibatch_size: int = 5) ‑> list[str]</span>
+<span>def <span class="ident">classify_prompt_chaining</span></span>(<span>verbatim: str, categories: list[str], minibatch_size: int = 9) ‑> list[str]</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def classify_prompt_chaining(verbatim : str, categories : list[str], minibatch_size : int = 5) -&gt; list[str]:
+<pre><code class="python">def classify_prompt_chaining(verbatim : str, categories : list[str], minibatch_size : int = 9) -&gt; list[str]:
     &#34;&#34;&#34;Uses many prompts which each have a recap of the previous classifications.
 
     For instance, suppose the minibatch size is 5. Then prompt chaning starts by
@@ -133,17 +142,16 @@ values in the json before outputting it as a python list of strings.</p>
     what it did for the already classified categories. And so on until every
     category is classified.
 
-    The prompt can be found in &#34;prompt_chaining_prompt.txt&#34;
+    The prompt can be found in &#34;prompts/prompt_chaining_prompt.txt&#34;
     &#34;&#34;&#34;
-    prompt = file_to_str(&#34;prompt_chaining_prompt.txt&#34;, {&#34;&lt;verbatim&gt;&#34; : verbatim})
+    prompt = file_to_str(&#34;prompts/prompt_chaining_prompt.txt&#34;, {&#34;&lt;verbatim&gt;&#34; : verbatim})
     already_classified = []
     classified_tones = []
     while len(classified_tones)&lt;len(categories):
         #We get the next categories to classify
         to_classify = categories[len(classified_tones):len(classified_tones) + minibatch_size]
         #We classify them in one prompt which also contains the already classified categories
-        #Debug: print(substitute(prompt, {&#34;&lt;already_classified&gt;&#34;: list_to_JSON(already_classified, classified_tones), &#34;&lt;to-classify&gt;&#34;: list_to_JSON(to_classify)}))
-        classified_tones += classify(prompt, to_classify, {&#34;&lt;already_classified&gt;&#34;: list_to_JSON(already_classified, classified_tones), &#34;&lt;to-classify&gt;&#34;: list_to_JSON(to_classify)})
+        classified_tones += classify(prompt, to_classify, {&#34;&lt;already_classified&gt;&#34;: list_to_JSON(already_classified, classified_tones), &#34;&lt;to_classify&gt;&#34;: list_to_JSON(to_classify)})
         #We add them to the already classified categories
         already_classified += to_classify
     return classified_tones</code></pre>
@@ -153,7 +161,7 @@ values in the json before outputting it as a python list of strings.</p>
 giving 5 categories to classify It then gives the five next, with a recap of
 what it did for the already classified categories. And so on until every
 category is classified.</p>
-<p>The prompt can be found in "prompt_chaining_prompt.txt"</p></div>
+<p>The prompt can be found in "prompts/prompt_chaining_prompt.txt"</p></div>
 </dd>
 <dt id="Projet-OptimisIA.classification_pipeline.classify_reflexion"><code class="name flex">
 <span>def <span class="ident">classify_reflexion</span></span>(<span>verbatim: str, categories: list[str], nb_loops: int = 2) ‑> list[str]</span>
@@ -196,9 +204,9 @@ category is classified.</p>
     &#34;&#34;&#34;
     #We start by doing a zero-shot prompt
     classified_tones = classify_zero_shot(verbatim, categories)
-    #We get the prompts of &#34;evaluation_prompt.txt&#34; and &#34;reflexion_prompt.txt&#34;
-    evaluation_prompt = file_to_str(&#34;evaluation_prompt.txt&#34;, {&#34;&lt;verbatim&gt;&#34; : verbatim})
-    reflexion_and_action_prompt = file_to_str(&#34;reflexion_and_action_prompt.txt&#34;, {&#34;&lt;verbatim&gt;&#34; : verbatim})
+    #We get the prompts of &#34;prompts/evaluation_prompt.txt&#34; and &#34;reflexion_prompt.txt&#34;
+    evaluation_prompt = file_to_str(&#34;prompts/evaluation_prompt.txt&#34;, {&#34;&lt;verbatim&gt;&#34; : verbatim})
+    reflexion_and_action_prompt = file_to_str(&#34;prompts/reflexion_and_action_prompt.txt&#34;, {&#34;&lt;verbatim&gt;&#34; : verbatim})
 
     best_classification, best_score = None, -1
     for i in range(nb_loops):
@@ -246,14 +254,14 @@ Action -&gt; Evaluation -&gt; Reflexion -&gt; Action -&gt; Evaluation -&gt; Refl
 </ul></div>
 </dd>
 <dt id="Projet-OptimisIA.classification_pipeline.classify_tree_of_thoughts"><code class="name flex">
-<span>def <span class="ident">classify_tree_of_thoughts</span></span>(<span>verbatim: str, categories: list[str], minibatch_size: int = 5) ‑> list[str]</span>
+<span>def <span class="ident">classify_tree_of_thoughts</span></span>(<span>verbatim: str, categories: list[str], minibatch_size: int = 9) ‑> list[str]</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def classify_tree_of_thoughts(verbatim : str, categories : list[str], minibatch_size : int = 5) -&gt; list[str]:
+<pre><code class="python">def classify_tree_of_thoughts(verbatim : str, categories : list[str], minibatch_size : int = 9) -&gt; list[str]:
     &#34;&#34;&#34;Works like prompt chaining, except that it doesn&#39;t have a recap of the previously classified categories.&#34;&#34;&#34;
     classified_tones = []
     while len(classified_tones)&lt;len(categories):
@@ -276,25 +284,24 @@ Action -&gt; Evaluation -&gt; Reflexion -&gt; Action -&gt; Evaluation -&gt; Refl
 <pre><code class="python">def classify_zero_shot(verbatim : str, categories : list[str]) -&gt; list[str]:
     &#34;&#34;&#34;Uses a single prompt to query the LLM.
 
-    The prompt can be found in &#34;zero_shot_prompt.txt&#34;
+    The prompt can be found in &#34;prompts/zero_shot_prompt.txt&#34;
     &#34;&#34;&#34;
-    prompt = file_to_str(&#34;zero_shot_prompt.txt&#34;, {&#34;&lt;verbatim&gt;&#34; : verbatim, &#34;&lt;categories&gt;&#34;: list_to_JSON(categories)})
-    #Debug : print(prompt) 
+    prompt = file_to_str(&#34;prompts/zero_shot_prompt.txt&#34;, {&#34;&lt;verbatim&gt;&#34; : verbatim, &#34;&lt;categories&gt;&#34;: list_to_JSON(categories)})
     return classify(prompt, categories)</code></pre>
 </details>
 <div class="desc"><p>Uses a single prompt to query the LLM.</p>
-<p>The prompt can be found in "zero_shot_prompt.txt"</p></div>
+<p>The prompt can be found in "prompts/zero_shot_prompt.txt"</p></div>
 </dd>
 <dt id="Projet-OptimisIA.classification_pipeline.verify_answer"><code class="name flex">
-<span>def <span class="ident">verify_answer</span></span>(<span>generated_categories: list[str],<br>generated_tones: list[str],<br>categories: list[str])</span>
+<span>def <span class="ident">verify_answer</span></span>(<span>generated_categories: list[str],<br>generated_tones: list[str],<br>categories: list[str]) ‑> bool</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def verify_answer(generated_categories : list[str], generated_tones : list[str], categories : list[str]):
-    &#34;&#34;&#34;Takes lists of categories and tones, and the real categories, and checks that the answer is valid.
+<pre><code class="python">def verify_answer(generated_categories : list[str], generated_tones : list[str], categories : list[str]) -&gt; bool:
+    &#34;&#34;&#34;Takes lists of categories and tones, and the real categories, and returns whether the answer is valid.
 
     When querying the LLM to get a json file, we must obtain a json whose keys are categories and whose
     values are tones. This function ensures that the json file indeed has valid keys and values.
@@ -303,14 +310,9 @@ Action -&gt; Evaluation -&gt; Reflexion -&gt; Action -&gt; Evaluation -&gt; Refl
     - generated_tones is a list of strings
     - categories is a list of strings
     &#34;&#34;&#34;
-    if generated_categories != categories:
-        print(&#34;Error : LLM returned invalid category&#34;)
-        exit(1)
-    if any(tone not in [&#34;Positif&#34;, &#34;Négatif&#34;, &#34;Neutre&#34;, &#34;Pas mentionné&#34;] for tone in tones):
-        print(&#34;Error : LLM returned invalid tone&#34;)
-        exit(1)</code></pre>
+    return (generated_categories == categories) and all(generated_tone in [&#34;Positif&#34;, &#34;Négatif&#34;, &#34;Neutre&#34;, &#34;Pas mentionné&#34;] for generated_tone in generated_tones)</code></pre>
 </details>
-<div class="desc"><p>Takes lists of categories and tones, and the real categories, and checks that the answer is valid.</p>
+<div class="desc"><p>Takes lists of categories and tones, and the real categories, and returns whether the answer is valid.</p>
 <p>When querying the LLM to get a json file, we must obtain a json whose keys are categories and whose
 values are tones. This function ensures that the json file indeed has valid keys and values.</p>
 <ul>

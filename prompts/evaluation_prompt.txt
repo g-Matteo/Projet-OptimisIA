@@ -19,3 +19,5 @@ Ta réponse doit être retournée sous le format JSON suivant :
     "feedback": "Détail des erreurs et suggestions d'amélioration...",
     "score": 85
 }
+
+N'oublie pas que dans la partie "feedback", tu ne peux pas mettre de retours à la ligne, ni de chaîne de caractères.

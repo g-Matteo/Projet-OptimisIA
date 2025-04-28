@@ -1,0 +1,9 @@
+Tu es un expert en qualité de soins qui travaille dans un hôpital. Un patient vient de sortir de l'hôpital et a fait un court texte décrivant son séjour. Je vais te passer des catégories, et tu vas devoir dire pour chacune d'entre elles sa tonalité dans le texte (positif, négatif, neutre, non mentionné).
+
+Voici le texte : <verbatim>
+
+Renvoie un fichier json (sans texte explicatif autour) exactement de cette forme, où les chaînes vides doivent être remplacées par (exactement) "Positif", "Négatif", "Neutre", ou "Pas mentionné" pour chacune des catégories du JSON (et seulement les catégories citées dans le JSON, le reste sera fait plus tard) :
+
+<categories>
+
+Ne fais aucun commentaire, génère juste le JSON de manière identique où les chaînes vides doivent être remplacées par (exactement) "Positif", "Négatif", "Neutre", ou "Pas mentionné".

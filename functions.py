@@ -17,8 +17,9 @@ client = OpenAI(
 )
 
 def substitute(s : str, substitutions : dict[str, str]) -> str:
-    """Takes a string and some substitutions, and applies these substitutions
+    """Takes a string and some substitutions, and applies these substitutions.
 
+    The parameters are:
     - s is the string we want to modify
     - substitutions is a dictionary
 
@@ -40,22 +41,21 @@ def file_to_str(filename : str, substitutions : dict[str, str] = {}) -> str:
         res = "".join(fd.readlines())
     return substitute(res, substitutions)
 
-#Makes a query to the LLM
 def LLM_query(prompt : str, substitutions : dict[str, str] = {}, is_json : bool = False) -> str:
-    """Queries the LLM
+    """Queries the LLM.
 
     Optionally, we can decide whether the output should be a json file or not.
     """
     prompt = substitute(prompt, substitutions)
     if is_json:
-        #response = client.chat.completions.create(
-        #    model=os.environ.get("MODEL"),
-        #    messages=[{"role": "user", "content": prompt}],
-        #    stream=False,
-        #    response_format={"type": "json_object"}
-        #)
-        #return json.loads(response.choices[0].message.content)
-        return json.loads('{\n    "feedback": "Bien",\n    "score": 80\n}')
+        response = client.chat.completions.create(
+            model=os.environ.get("MODEL"),
+            messages=[{"role": "user", "content": prompt}],
+            stream=False,
+            response_format={"type": "json_object"}
+        )
+        return json.loads(response.choices[0].message.content)
+        #return json.loads('{\n    "feedback": "Bien",\n    "score": 80\n}')
     else:
         response = client.chat.completions.create(
             model=os.environ.get("MODEL"),

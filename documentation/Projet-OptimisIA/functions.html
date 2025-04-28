@@ -58,20 +58,20 @@ pipeline, and the verbatim generator</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def LLM_query(prompt : str, substitutions : dict[str, str] = {}, is_json : bool = False) -&gt; str:
-    &#34;&#34;&#34;Queries the LLM
+    &#34;&#34;&#34;Queries the LLM.
 
     Optionally, we can decide whether the output should be a json file or not.
     &#34;&#34;&#34;
     prompt = substitute(prompt, substitutions)
     if is_json:
-        #response = client.chat.completions.create(
-        #    model=os.environ.get(&#34;MODEL&#34;),
-        #    messages=[{&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: prompt}],
-        #    stream=False,
-        #    response_format={&#34;type&#34;: &#34;json_object&#34;}
-        #)
-        #return json.loads(response.choices[0].message.content)
-        return json.loads(&#39;{\n    &#34;feedback&#34;: &#34;Bien&#34;,\n    &#34;score&#34;: 80\n}&#39;)
+        response = client.chat.completions.create(
+            model=os.environ.get(&#34;MODEL&#34;),
+            messages=[{&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: prompt}],
+            stream=False,
+            response_format={&#34;type&#34;: &#34;json_object&#34;}
+        )
+        return json.loads(response.choices[0].message.content)
+        #return json.loads(&#39;{\n    &#34;feedback&#34;: &#34;Bien&#34;,\n    &#34;score&#34;: 80\n}&#39;)
     else:
         response = client.chat.completions.create(
             model=os.environ.get(&#34;MODEL&#34;),
@@ -80,7 +80,7 @@ pipeline, and the verbatim generator</p>
         )
         return response.choices[0].message.content</code></pre>
 </details>
-<div class="desc"><p>Queries the LLM</p>
+<div class="desc"><p>Queries the LLM.</p>
 <p>Optionally, we can decide whether the output should be a json file or not.</p></div>
 </dd>
 <dt id="Projet-OptimisIA.functions.file_to_str"><code class="name flex">
@@ -163,8 +163,9 @@ pipeline, and the verbatim generator</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def substitute(s : str, substitutions : dict[str, str]) -&gt; str:
-    &#34;&#34;&#34;Takes a string and some substitutions, and applies these substitutions
+    &#34;&#34;&#34;Takes a string and some substitutions, and applies these substitutions.
 
+    The parameters are:
     - s is the string we want to modify
     - substitutions is a dictionary
 
@@ -176,11 +177,10 @@ pipeline, and the verbatim generator</p>
         s = s.replace(key, str(substitutions[key]))
     return s</code></pre>
 </details>
-<div class="desc"><p>Takes a string and some substitutions, and applies these substitutions</p>
-<ul>
-<li>s is the string we want to modify</li>
-<li>substitutions is a dictionary</li>
-</ul>
+<div class="desc"><p>Takes a string and some substitutions, and applies these substitutions.</p>
+<p>The parameters are:
+- s is the string we want to modify
+- substitutions is a dictionary</p>
 <p>For instance, when given a dictionary {"a" : "b"}, it returns the same string
 where every instance of "a" is replaced by an instance of "b". This function
 is useful in order to add verbatims and other informations to a prompt.</p></div>

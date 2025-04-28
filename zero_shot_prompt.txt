@@ -1,7 +1,0 @@
-Tu es un expert en qualité de soins qui travaille dans un hôpital. Un patient vient de sortir de l'hôpital et a fait un court texte décrivant son séjour. Je vais te passer des catégories, et tu vas devoir dire pour chacune d'entre elles sa tonalité dans le texte (positif, négatif, neutre, non mentionné).
-
-Voici le texte : <verbatim>
-
-Renvoie un fichier json de cette forme, où les chaînes vides doivent être remplacées par "Positif", "Négatif", "Neutre", ou "Pas mentionné" pour chacune de ces 21 catégories :
-
-<categories>

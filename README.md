@@ -28,9 +28,9 @@ MODEL_NAME=llama3-70b
 ```
 
 ## Generate fake verbatims
-This program generates new verbatims and their real tones. The verbatims and their tones are appended to `generated_verbatims.txt`.
+This program generates new verbatims and their real tones.
 ```
-python verbatim_generator.py
+python verbatim_generator.py output_file.txt number_of_verbatims
 ```
 
 ## Launch the classification pipeline

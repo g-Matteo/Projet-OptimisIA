@@ -1,8 +1,8 @@
 import sys
 from functions import *
 
-def verify_answer(generated_categories : list[str], generated_tones : list[str], categories : list[str]):
-    """Takes lists of categories and tones, and the real categories, and checks that the answer is valid.
+def verify_answer(generated_categories : list[str], generated_tones : list[str], categories : list[str]) -> bool:
+    """Takes lists of categories and tones, and the real categories, and returns whether the answer is valid.
 
     When querying the LLM to get a json file, we must obtain a json whose keys are categories and whose
     values are tones. This function ensures that the json file indeed has valid keys and values.
@@ -11,40 +11,40 @@ def verify_answer(generated_categories : list[str], generated_tones : list[str],
     - generated_tones is a list of strings
     - categories is a list of strings
     """
-    if generated_categories != categories:
-        print("Error : LLM returned invalid category")
-        exit(1)
-    if any(tone not in ["Positif", "Négatif", "Neutre", "Pas mentionné"] for tone in tones):
-        print("Error : LLM returned invalid tone")
-        exit(1)
+    return (generated_categories == categories) and all(generated_tone in ["Positif", "Négatif", "Neutre", "Pas mentionné"] for generated_tone in generated_tones)
 
-def classify(prompt : str, categories : list[str], substutions : dict[str, str] = {}):
+
+def classify(prompt : str, categories : list[str], substitutions : dict[str, str] = {}):
     """Queries the LLM to classify categories according to a prompt.
 
     It acts like LLM_query(), but it is made specifically for outputting
     json format. This function, after calling LLM_query(), verifies the
     values in the json before outputting it as a python list of strings.
+    If the values in the json aren't valid, it repeats.
 
     - prompt is a string
     - categories is a list
     - substitutions is an optional dictionary (see substitute())
     """
-    #JSON_dict = LLM_query(prompt, substitutions, is_json=True)
-    #generated_categories, generated_tones = list(JSON_dict.keys()), list(JSON_dict.values())
-    #verify_answer(generated_categories, generated_tones, categories)
-    #return generated_tones
-    return ['Positif', 'Positif', 'Neutre', 'Positif', 'Positif', 'Positif', 'Négatif', 'Positif', 'Positif', 'Positif', 'Positif', 'Positif', 'Négatif', 'Positif', 'Positif', 'Positif', 'Pas mentionné', 'Négatif', 'Neutre', 'Positif', 'Négatif'][:len(categories)]
+    repeat = True
+    print(prompt)
+    while repeat:
+        JSON_dict = LLM_query(prompt, substitutions, is_json=True)
+        generated_categories, generated_tones = list(JSON_dict.keys()), list(JSON_dict.values())
+        repeat = not(verify_answer(generated_categories, generated_tones, categories))
+        print("retry" if repeat else "ok")
+
+    return generated_tones
 
 def classify_zero_shot(verbatim : str, categories : list[str]) -> list[str]:
     """Uses a single prompt to query the LLM.
 
-    The prompt can be found in "zero_shot_prompt.txt"
+    The prompt can be found in "prompts/zero_shot_prompt.txt"
     """
-    prompt = file_to_str("zero_shot_prompt.txt", {"<verbatim>" : verbatim, "<categories>": list_to_JSON(categories)})
-    #Debug : print(prompt) 
+    prompt = file_to_str("prompts/zero_shot_prompt.txt", {"<verbatim>" : verbatim, "<categories>": list_to_JSON(categories)})
     return classify(prompt, categories)
 
-def classify_prompt_chaining(verbatim : str, categories : list[str], minibatch_size : int = 5) -> list[str]:
+def classify_prompt_chaining(verbatim : str, categories : list[str], minibatch_size : int = 9) -> list[str]:
     """Uses many prompts which each have a recap of the previous classifications.
 
     For instance, suppose the minibatch size is 5. Then prompt chaning starts by
@@ -52,22 +52,21 @@ def classify_prompt_chaining(verbatim : str, categories : list[str], minibatch_s
     what it did for the already classified categories. And so on until every
     category is classified.
 
-    The prompt can be found in "prompt_chaining_prompt.txt"
+    The prompt can be found in "prompts/prompt_chaining_prompt.txt"
     """
-    prompt = file_to_str("prompt_chaining_prompt.txt", {"<verbatim>" : verbatim})
+    prompt = file_to_str("prompts/prompt_chaining_prompt.txt", {"<verbatim>" : verbatim})
     already_classified = []
     classified_tones = []
     while len(classified_tones)<len(categories):
         #We get the next categories to classify
         to_classify = categories[len(classified_tones):len(classified_tones) + minibatch_size]
         #We classify them in one prompt which also contains the already classified categories
-        #Debug: print(substitute(prompt, {"<already_classified>": list_to_JSON(already_classified, classified_tones), "<to-classify>": list_to_JSON(to_classify)}))
-        classified_tones += classify(prompt, to_classify, {"<already_classified>": list_to_JSON(already_classified, classified_tones), "<to-classify>": list_to_JSON(to_classify)})
+        classified_tones += classify(prompt, to_classify, {"<already_classified>": list_to_JSON(already_classified, classified_tones), "<to_classify>": list_to_JSON(to_classify)})
         #We add them to the already classified categories
         already_classified += to_classify
     return classified_tones
 
-def classify_tree_of_thoughts(verbatim : str, categories : list[str], minibatch_size : int = 5) -> list[str]:
+def classify_tree_of_thoughts(verbatim : str, categories : list[str], minibatch_size : int = 9) -> list[str]:
     """Works like prompt chaining, except that it doesn't have a recap of the previously classified categories."""
     classified_tones = []
     while len(classified_tones)<len(categories):
@@ -110,9 +109,9 @@ def classify_reflexion(verbatim : str, categories : list[str], nb_loops : int = 
     """
     #We start by doing a zero-shot prompt
     classified_tones = classify_zero_shot(verbatim, categories)
-    #We get the prompts of "evaluation_prompt.txt" and "reflexion_prompt.txt"
-    evaluation_prompt = file_to_str("evaluation_prompt.txt", {"<verbatim>" : verbatim})
-    reflexion_and_action_prompt = file_to_str("reflexion_and_action_prompt.txt", {"<verbatim>" : verbatim})
+    #We get the prompts of "prompts/evaluation_prompt.txt" and "reflexion_prompt.txt"
+    evaluation_prompt = file_to_str("prompts/evaluation_prompt.txt", {"<verbatim>" : verbatim})
+    reflexion_and_action_prompt = file_to_str("prompts/reflexion_and_action_prompt.txt", {"<verbatim>" : verbatim})
 
     best_classification, best_score = None, -1
     for i in range(nb_loops):
@@ -134,11 +133,13 @@ def classify_reflexion(verbatim : str, categories : list[str], nb_loops : int = 
 def classification_pipeline():
     """The main function of the classification pipeline.
 
-    The program takes as an input two arguments:
+    The classification pipeline uses prompt chaining.
+
+    The program takes as input two arguments:
     - The path of an input file, in which there is, for every line, a verbatim
     - The path of an output file, which will be overwritten with the corresponding classifications.
 
-    An example of input file can be found in "verbatims_to_classify.txt"
+    An example of input file can be found in "prompts/verbatims_to_classify.txt"
     """
     if len(sys.argv)!=3:
         exit(f"Usage: {sys.argv[0]} input_file.txt output_file.txt")

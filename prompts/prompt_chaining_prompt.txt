@@ -8,4 +8,4 @@ Et voici l'ensemble des catégories qui ont déjà été classifiées :
 
 Renvoie un fichier json de cette forme, où les chaînes vides doivent être remplacées par "Positif", "Négatif", "Neutre" ou "Pas mentionné" pour les catégories suivantes :
 
-<to-classify>
+<to_classify>
