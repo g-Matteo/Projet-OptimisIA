@@ -25,7 +25,7 @@ def get_verbatims_and_tones(filename : str) -> list[tuple[str, list[str]]]:
             #The verbatim is the right part of the line, just after the table of tones
             verbatim = line[line.index("]")+1:]
             #We transform the table of tones into a python table
-            tones = json.loads(line[:line.index("]")+1])
+            tones = eval(line[:line.index("]")+1])
             res.append((verbatim, tones))
     return res
 
