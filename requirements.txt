@@ -2,3 +2,4 @@ krippendorff==0.8.1
 openai==1.69.0
 python-dotenv==1.1.0
 pandas==2.2.3
+pdoc==15.0.1
