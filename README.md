@@ -24,7 +24,7 @@ python3 -m pip install -r requirements.txt
 ```
 API_ENDPOINT=http://localhost:11434/v1/
 API_KEY=api-key
-MODEL_NAME=llama3-70b
+MODEL=llama3-70b
 ```
 
 ## Generate fake verbatims
