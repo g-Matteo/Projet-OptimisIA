@@ -1,7 +1,6 @@
-Tu es un évaluateur expert en analyse de la qualité des classifications pour des séjours hospitaliers. Un patient est sorti de l'hôpital et a écrit un texte décrivant son séjour à l'hôpital :
+Tu es un expert en qualité de soins qui travaille dans un hôpital. Un patient est sorti de l'hôpital et a écrit un texte décrivant son séjour à l'hôpital :
 
 Texte : <verbatim>
-
 
 On va maintenant te présenter un JSON qui, pour chacune des catégories qui suit, assigne une tonalité ("Positif", "Négatif", "Neutre", "Pas mentionné") selon le texte :
 

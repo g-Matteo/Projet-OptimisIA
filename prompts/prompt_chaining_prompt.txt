@@ -1,4 +1,4 @@
-Tu es un expert en qualité de soins qui travaille dans un hôpital. Un patient vient de sortir de l'hôpital et a fait un court texte décrivant son séjour. Je vais te passer des catégories, et tu vas devoir dire pour chacune d'entre elles sa tonalité dans le texte (positif, négatif, neutre, non mentionné).
+Tu es un expert en qualité de soins qui travaille dans un hôpital. Un patient vient de sortir de l'hôpital et a fait un court texte décrivant son séjour. Je vais te passer des catégories, et tu vas devoir dire pour chacune d'entre elles sa tonalité dans le texte ("Positif", "Négatif", "Neutre", "Pas mentionné").
 
 Voici le texte : <verbatim>
 
