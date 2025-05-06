@@ -27,7 +27,8 @@ def classify(prompt : str, categories : list[str], substitutions : dict[str, str
     - substitutions is an optional dictionary (see substitute())
     """
     repeat = True
-    print(prompt)
+    if debug:
+        print(prompt)
     while repeat:
         JSON_dict = LLM_query(prompt, substitutions, is_json=True)
         generated_categories, generated_tones = list(JSON_dict.keys()), list(JSON_dict.values())

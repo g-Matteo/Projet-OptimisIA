@@ -9,6 +9,8 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import json
 
+debug = False
+
 load_dotenv()
 
 client = OpenAI(
@@ -54,7 +56,13 @@ def LLM_query(prompt : str, substitutions : dict[str, str] = {}, is_json : bool 
             stream=False,
             response_format={"type": "json_object"}
         )
-        return json.loads(response.choices[0].message.content)
+        res = response.choices[0].message.content
+
+        if debug:
+            print("---\n")
+            print(res[res.index("{"):res.index("}")+1])
+            print("---\n")
+        return json.loads(res[res.index("{"):res.index("}")+1])
         #return json.loads('{\n    "feedback": "Bien",\n    "score": 80\n}')
     else:
         response = client.chat.completions.create(
