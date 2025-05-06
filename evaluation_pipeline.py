@@ -159,8 +159,7 @@ def evaluation_pipeline():
     categories = list(json.loads(file_to_str("categories.json")).keys())
 
     #for each classification method
-    #for classification_method, name_of_method in zip([classify_zero_shot, classify_prompt_chaining, classify_tree_of_thoughts, classify_reflexion], ["Zero-Shot", "Prompt Chaining", "Tree of Thoughts", "Reflexion"]):
-    for classification_method, name_of_method in zip([classify_reflexion], ["Reflexion"]):
+    for classification_method, name_of_method in zip([classify_zero_shot, classify_prompt_chaining, classify_tree_of_thoughts, classify_reflexion], ["Zero-Shot", "Prompt Chaining", "Tree of Thoughts", "Reflexion"]):
         time_taken = 0
         list_classified_tones = [[], []]
         nb_verbatims = 0
