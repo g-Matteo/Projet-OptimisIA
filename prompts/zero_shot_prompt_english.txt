@@ -1,0 +1,9 @@
+You are a healthcare quality expert working in a hospital. A patient has just been discharged and has written a short text describing their stay. I will give you a list of categories, and you must determine the tone for each of them in the text (positive, negative, neutral, not mentioned).
+
+Here is the text: <verbatim>
+
+Return a JSON file (without any explanatory text around it) exactly in the following format, where the empty strings must be replaced with (exactly) "Positive", "Negative", "Neutral", or "Not mentioned" for each of the categories in the JSON (and only the categories listed in the JSON—others will be handled later):
+
+<categories>
+
+Do not include any comments, just generate the JSON in the same structure, replacing the empty strings with (exactly) "Positive", "Negative", "Neutral", or "Not mentioned".
