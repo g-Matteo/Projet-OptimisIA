@@ -93,20 +93,27 @@ def LLM_query(prompt : str, substitutions : dict[str, str] = {}, is_json : bool 
     """
     prompt = substitute(prompt, substitutions)
     if is_json:
-        response = client.chat.completions.create(
-            model=os.environ.get("MODEL"),
-            messages=[{"role": "user", "content": prompt}],
-            stream=False,
-            response_format={"type": "json_object"}
-        )
-        res = response.choices[0].message.content
+        repeat=True
+        while repeat:
+            response = client.chat.completions.create(
+                model=os.environ.get("MODEL"),
+                messages=[{"role": "user", "content": prompt}],
+                stream=False,
+                response_format={"type": "json_object"}
+            )
+            res = response.choices[0].message.content
+
+            try:
+                res = json.loads(res[res.index("{"):res.index("}")+1])
+                repeat=False
+            except ValueError as e:
+                repeat=True
+                print("retry")
 
         if debug:
-            print("---\n")
-            print(res[res.index("{"):res.index("}")+1])
-            print("---\n")
-        return json.loads(res[res.index("{"):res.index("}")+1])
-        #return json.loads('{\n    "feedback": "Bien",\n    "score": 80\n}')
+            print(f"\n---\n{res}\n---\n")
+
+        return res
     else:
         response = client.chat.completions.create(
             model=os.environ.get("MODEL"),
