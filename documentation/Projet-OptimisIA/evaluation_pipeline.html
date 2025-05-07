@@ -65,11 +65,10 @@ el.replaceWith(d);
     if len(sys.argv)!=2:
         exit(f&#34;Usage: {sys.argv[0]} input_file.txt&#34;)
 
-    categories = list(json.loads(file_to_str(&#34;categories.json&#34;)).keys())
+    categories = list(json.loads(file_to_str(CATEGORIES_PATH)).keys())
 
     #for each classification method
-    #for classification_method, name_of_method in zip([classify_zero_shot, classify_prompt_chaining, classify_tree_of_thoughts, classify_reflexion], [&#34;Zero-Shot&#34;, &#34;Prompt Chaining&#34;, &#34;Tree of Thoughts&#34;, &#34;Reflexion&#34;]):
-    for classification_method, name_of_method in zip([classify_reflexion], [&#34;Reflexion&#34;]):
+    for classification_method, name_of_method in zip([classify_zero_shot, classify_prompt_chaining, classify_tree_of_thoughts, classify_reflexion], [&#34;Zero-Shot&#34;, &#34;Prompt Chaining&#34;, &#34;Tree-of-Thoughts&#34;, &#34;Reflexion&#34;]):
         time_taken = 0
         list_classified_tones = [[], []]
         nb_verbatims = 0
@@ -123,7 +122,7 @@ el.replaceWith(d);
 
     More precisions for the output:
     - verbatim is a string
-    - tones is a list which, for the i-th category, contains a value between &#34;Positif&#34;, &#34;Négatif&#34;, &#34;Pas mentionné&#34;, and &#34;Neutre&#34;
+    - tones is a list which, for the i-th category, contains a value between POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED
     &#34;&#34;&#34;
     res = []
     with open(filename, &#34;r&#34;) as fd:
@@ -131,7 +130,7 @@ el.replaceWith(d);
             #The verbatim is the right part of the line, just after the table of tones
             verbatim = line[line.index(&#34;]&#34;)+1:]
             #We transform the table of tones into a python table
-            tones = json.loads(line[:line.index(&#34;]&#34;)+1])
+            tones = eval(line[:line.index(&#34;]&#34;)+1])
             res.append((verbatim, tones))
     return res</code></pre>
 </details>
@@ -139,7 +138,7 @@ el.replaceWith(d);
 <p>This function takes a filename as an input. TAn example of such filename is "generated_verbatims.txt"</p>
 <p>More precisions for the output:
 - verbatim is a string
-- tones is a list which, for the i-th category, contains a value between "Positif", "Négatif", "Pas mentionné", and "Neutre"</p></div>
+- tones is a list which, for the i-th category, contains a value between POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED</p></div>
 </dd>
 <dt id="Projet-OptimisIA.evaluation_pipeline.hallucination_rate"><code class="name flex">
 <span>def <span class="ident">hallucination_rate</span></span>(<span>M)</span>
@@ -152,20 +151,20 @@ el.replaceWith(d);
 <pre><code class="python">def hallucination_rate(M):
     &#34;&#34;&#34;Returns the hallucination rate.
     
-    The hallucination rate is equal to the number of false negatives of &#34;Pas mentionné&#34;,
-    divided by the true positives, false positives, true negatives, and false negatives of &#34;Pas mentionné&#34;.
+    The hallucination rate is equal to the number of false negatives of NOT_MENTIONED,
+    divided by the true positives, false positives, true negatives, and false negatives of NOT_MENTIONED.
 
-    Equivalently, it is the proportion of time where elements are wrongly not classified as &#34;Pas mentionné&#34;,
+    Equivalently, it is the proportion of time where elements are wrongly not classified as NOT_MENTIONED,
     which represents the rate at which the LLM sees features where there aren&#39;t.
     &#34;&#34;&#34;
     #hallucination_rate = ratio of tones which haven&#39;t been classified as &#34;Pas mentionné&#34; when they should
     #hallucination_rate = False Negatives of &#34;Pas mentionné&#34; / (True Positives of &#34;Pas Mentionné&#34; + ... + False Negatives of &#34;Pas Mentionné&#34;)
-    return M[PAS_MENTIONNE][FN]/sum(M[PAS_MENTIONNE][i] for i in range(4))</code></pre>
+    return M[to_number(NOT_MENTIONED)][FN]/sum(M[to_number(NOT_MENTIONED)][i] for i in range(4))</code></pre>
 </details>
 <div class="desc"><p>Returns the hallucination rate.</p>
-<p>The hallucination rate is equal to the number of false negatives of "Pas mentionné",
-divided by the true positives, false positives, true negatives, and false negatives of "Pas mentionné".</p>
-<p>Equivalently, it is the proportion of time where elements are wrongly not classified as "Pas mentionné",
+<p>The hallucination rate is equal to the number of false negatives of NOT_MENTIONED,
+divided by the true positives, false positives, true negatives, and false negatives of NOT_MENTIONED.</p>
+<p>Equivalently, it is the proportion of time where elements are wrongly not classified as NOT_MENTIONED,
 which represents the rate at which the LLM sees features where there aren't.</p></div>
 </dd>
 <dt id="Projet-OptimisIA.evaluation_pipeline.mean"><code class="name flex">
@@ -194,42 +193,42 @@ which represents the rate at which the LLM sees features where there aren't.</p>
 <pre><code class="python">def precision(M, bis=False):
     &#34;&#34;&#34;Returns the precision.
     
-    The precision is equal to mean(precision of &#34;Positif&#34;, ..., precision of &#34;Pas mentionné&#34;).
+    The precision is equal to mean(precision of POSITIVE, ..., precision of NOT_MENTIONED).
     The precision of the class i is the number of true positives of class i,
     divided by the number of true positives and false positives of class i.
 
-    If bis=true, then the precision is the number of true positives of class &#34;Positif ou Négatif&#34;,
-    divided by the number of true positives and false positives of class &#34;Positif ou Négatif&#34;
+    If bis=true, then the precision is the number of true positives of class POSITIVE_OR_NEGATIVE,
+    divided by the number of true positives and false positives of class POSITIVE_OR_NEGATIVE
 
     If the division is impossible in any of these cases, we return -1.
 
     The second implementation is the method used in Zeno&#39;s article. In Zeno&#39;s article, they set
-    &#34;Positif&#34; = &#34;Négatif&#34; = 1 and &#34;Neutre&#34; = &#34;Pas mentionné&#34; = 0, and compute the precision of the class 1.
+    POSITIVE = NEGATIVE = 1 and NEUTRAL = NOT_MENTIONED = 0, and compute the precision of the class 1.
 
-    We include both methods since the first one has an advantage: as it considers &#34;Positif&#34; as different from
-    &#34;Négatif&#34;, it penalizes a misclassification between these two classes, and the same can be said for the
-    classes &#34;Neutre&#34; and &#34;Pas mentionné&#34;.
+    We include both methods since the first one has an advantage: as it considers POSITIVE as different from
+    NEGATIVE, it penalizes a misclassification between these two classes, and the same can be said for the
+    classes NEUTRAL and NOT_MENTIONED.
     &#34;&#34;&#34;
     if bis:
-        #precision_bis = precision of class [&#34;Positif&#34;, &#34;Négatif&#34;]
+        #precision_bis = precision of class POSITIVE_OR_NEGATIVE
         return -1 if (M[BIS][TP]+M[BIS][FP])==0 else M[BIS][TP]/(M[BIS][TP]+M[BIS][FP])
     else:
-        #precision = mean(precision of &#34;Positif&#34;, ..., precision of &#34;Pas mentionné&#34;)
+        #precision = mean(precision of POSITIVE, ..., precision of NOT_MENTIONED)
         #precision of class X = True Positives of class X / (True Positives of class X + False positives of class X)
         return -1 if any(M[i][TP]+M[i][FP]==0 for i in range(4)) else mean(M[i][TP]/(M[i][TP]+M[i][FP]) for i in range(4))</code></pre>
 </details>
 <div class="desc"><p>Returns the precision.</p>
-<p>The precision is equal to mean(precision of "Positif", &hellip;, precision of "Pas mentionné").
+<p>The precision is equal to mean(precision of POSITIVE, &hellip;, precision of NOT_MENTIONED).
 The precision of the class i is the number of true positives of class i,
 divided by the number of true positives and false positives of class i.</p>
-<p>If bis=true, then the precision is the number of true positives of class "Positif ou Négatif",
-divided by the number of true positives and false positives of class "Positif ou Négatif"</p>
+<p>If bis=true, then the precision is the number of true positives of class POSITIVE_OR_NEGATIVE,
+divided by the number of true positives and false positives of class POSITIVE_OR_NEGATIVE</p>
 <p>If the division is impossible in any of these cases, we return -1.</p>
 <p>The second implementation is the method used in Zeno's article. In Zeno's article, they set
-"Positif" = "Négatif" = 1 and "Neutre" = "Pas mentionné" = 0, and compute the precision of the class 1.</p>
-<p>We include both methods since the first one has an advantage: as it considers "Positif" as different from
-"Négatif", it penalizes a misclassification between these two classes, and the same can be said for the
-classes "Neutre" and "Pas mentionné".</p></div>
+POSITIVE = NEGATIVE = 1 and NEUTRAL = NOT_MENTIONED = 0, and compute the precision of the class 1.</p>
+<p>We include both methods since the first one has an advantage: as it considers POSITIVE as different from
+NEGATIVE, it penalizes a misclassification between these two classes, and the same can be said for the
+classes NEUTRAL and NOT_MENTIONED.</p></div>
 </dd>
 <dt id="Projet-OptimisIA.evaluation_pipeline.print_table"><code class="name flex">
 <span>def <span class="ident">print_table</span></span>(<span>M)</span>
@@ -244,7 +243,7 @@ classes "Neutre" and "Pas mentionné".</p></div>
 
     For more info about the resume table, see the documentation of update_resume_table().
     &#34;&#34;&#34;
-    M = pandas.DataFrame(M, index=[&#34;Positif&#34;, &#34;Négatif&#34;, &#34;Neutre&#34;, &#34;Pas mentionné&#34;, &#34;Positif ou Négatif&#34;], columns=[&#34;True Positive&#34;, &#34;False Positive&#34;, &#34;True Negative&#34;, &#34;False Negative&#34;])
+    M = pandas.DataFrame(M, index=[POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED, POSITIVE_OR_NEGATIVE], columns=[TRUE_POSITIVES, FALSE_POSITIVES, TRUE_NEGATIVES, FALSE_NEGATIVES])
     print(M)</code></pre>
 </details>
 <div class="desc"><p>Prints the so-called "resume table" M.</p>
@@ -261,31 +260,31 @@ classes "Neutre" and "Pas mentionné".</p></div>
 <pre><code class="python">def recall(M, bis=False):
     &#34;&#34;&#34;Returns the recall.
     
-    The recall is equal to mean(recall of &#34;Positif&#34;, ..., recall of &#34;Pas mentionné&#34;).
+    The recall is equal to mean(recall of POSITIVE, ..., recall of NOT_MENTIONED).
     The recall of class i is the number of true positives of class i,
     divided by the number of true positives and false negatives of class i.
 
-    If bis=true, then the recall is the number of true positives of class &#34;Positif ou Négatif&#34;,
-    divided by the number of true positives and false negatives of class &#34;Positif ou Négatif&#34;
+    If bis=true, then the recall is the number of true positives of class POSITIVE_OR_NEGATIVE,
+    divided by the number of true positives and false negatives of class POSITIVE_OR_NEGATIVE
 
     If the division is impossible in any of these cases, we return -1.
 
     For more info about the bis option, see the documentation of precision().
     &#34;&#34;&#34;
     if bis:
-        #recall_bis = recall of class [&#34;Positif&#34;, &#34;Négatif&#34;]
+        #recall_bis = recall of class POSITIVE_OR_NEGATIVE
         return -1 if (M[BIS][TP]+M[BIS][FN])==0 else M[BIS][TP]/(M[BIS][TP]+M[BIS][FN])
     else:
-        #recall = mean(recall of &#34;Positif&#34;, ..., recall of &#34;Pas mentionné&#34;)
+        #recall = mean(recall of POSITIVE, ..., recall of NOT_MENTIONED)
         #recall of class X = True Positives of class X / (True Positives of class X + False Negatives of class X)
         return -1 if any((M[i][TP]+M[i][FN])==0 for i in range(4)) else mean(M[i][TP]/(M[i][TP]+M[i][FN]) for i in range(4))</code></pre>
 </details>
 <div class="desc"><p>Returns the recall.</p>
-<p>The recall is equal to mean(recall of "Positif", &hellip;, recall of "Pas mentionné").
+<p>The recall is equal to mean(recall of POSITIVE, &hellip;, recall of NOT_MENTIONED).
 The recall of class i is the number of true positives of class i,
 divided by the number of true positives and false negatives of class i.</p>
-<p>If bis=true, then the recall is the number of true positives of class "Positif ou Négatif",
-divided by the number of true positives and false negatives of class "Positif ou Négatif"</p>
+<p>If bis=true, then the recall is the number of true positives of class POSITIVE_OR_NEGATIVE,
+divided by the number of true positives and false negatives of class POSITIVE_OR_NEGATIVE</p>
 <p>If the division is impossible in any of these cases, we return -1.</p>
 <p>For more info about the bis option, see the documentation of precision().</p></div>
 </dd>
@@ -300,21 +299,21 @@ divided by the number of true positives and false negatives of class "Positif ou
 <pre><code class="python">def to_number(s : str) -&gt; int:
     &#34;&#34;&#34;This function converts a tone into a number
     
-    &#34;Positif&#34;       -&gt; 0
-    &#34;Négatif&#34;       -&gt; 1
-    &#34;Neutre&#34;        -&gt; 2
-    &#34;Pas mentionné&#34; -&gt; 3
+    POSITIVE      -&gt; 0
+    NEGATIVE      -&gt; 1
+    NEUTRAL       -&gt; 2
+    NOT_MENTIONED -&gt; 3
     &#34;&#34;&#34;
-    return [&#34;Positif&#34;, &#34;Négatif&#34;, &#34;Neutre&#34;, &#34;Pas mentionné&#34;].index(s)</code></pre>
+    return [POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED].index(s)</code></pre>
 </details>
 <div class="desc"><p>This function converts a tone into a number</p>
-<p>"Positif"
+<p>POSITIVE
 -&gt; 0
-"Négatif"
+NEGATIVE
 -&gt; 1
-"Neutre"
+NEUTRAL
 -&gt; 2
-"Pas mentionné" -&gt; 3</p></div>
+NOT_MENTIONED -&gt; 3</p></div>
 </dd>
 <dt id="Projet-OptimisIA.evaluation_pipeline.update_resume_table"><code class="name flex">
 <span>def <span class="ident">update_resume_table</span></span>(<span>M: list[list[int]], classified_tones: list[str], actual_tones: list[str])</span>
@@ -328,18 +327,18 @@ divided by the number of true positives and false negatives of class "Positif ou
     &#34;&#34;&#34;Updates the so-called &#34;resume table&#34; M.
 
     The resume table M is a matrix with five rows and four columns such that:
-    - The five rows are named &#34;Positif&#34;, &#34;Négatif&#34;, &#34;Neutre&#34;, &#34;Pas mentionné&#34;, and &#34;Positif ou Négatif&#34;.
-    - The four columns are named &#34;True Positive&#34;, &#34;False Positive&#34;, &#34;True Negative&#34;, &#34;False Negative&#34;
-    - The intersection between (for instance) the column &#34;Neutre&#34; and &#34;False Positives&#34; is the number
-    of false positives in the class &#34;Neutre&#34;, that is, the number of elements which have been classified
-    as &#34;Neutre&#34; when they shouldn&#39;t.
+    - The five rows are named POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED, and POSITIVE_OR_NEGATIVE.
+    - The four columns are named TRUE_POSITIVES, FALSE_POSITIVES, TRUE_NEGATIVES, FALSE_NEGATIVES
+    - The intersection between (for instance) the column NEUTRAL and FALSE_POSITIVES is the number
+    of false positives in the class Neutral, that is, the number of elements which have been classified
+    as neutral when they shouldn&#39;t.
 
     This function takes the resume table, a list of classified tones, and the actual tones,
-    and updates the resume table accordingly. That is, for every class &#34;Positif&#34;, &#34;Négatif&#34;,
-    &#34;Neutre&#34;, &#34;Pas Mentionné&#34;, and &#34;Positif ou Négatif&#34;, it counts the number of true positives,
+    and updates the resume table accordingly. That is, for every class POSITIVE, NEGATIVE,
+    NEUTRAL, NOT_MENTIONED, and POSITIVE_OR_NEGATIVE, it counts the number of true positives,
     false positives, true negatives, and false negatives, and updates the row accordingly.    
     &#34;&#34;&#34;
-    possible_tones = [[&#34;Positif&#34;], [&#34;Négatif&#34;], [&#34;Neutre&#34;], [&#34;Pas mentionné&#34;], [&#34;Positif&#34;, &#34;Négatif&#34;]]
+    possible_tones = [[POSITIVE], [NEGATIVE], [NEUTRAL], [NOT_MENTIONED], [POSITIVE, NEGATIVE]]
     #For every row
     for i in range(len(possible_tones)):
         #We count the number of True Positives, False Positives, True Negatives, and False Negatives
@@ -355,14 +354,14 @@ divided by the number of true positives and false negatives of class "Positif ou
 </details>
 <div class="desc"><p>Updates the so-called "resume table" M.</p>
 <p>The resume table M is a matrix with five rows and four columns such that:
-- The five rows are named "Positif", "Négatif", "Neutre", "Pas mentionné", and "Positif ou Négatif".
-- The four columns are named "True Positive", "False Positive", "True Negative", "False Negative"
-- The intersection between (for instance) the column "Neutre" and "False Positives" is the number
-of false positives in the class "Neutre", that is, the number of elements which have been classified
-as "Neutre" when they shouldn't.</p>
+- The five rows are named POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED, and POSITIVE_OR_NEGATIVE.
+- The four columns are named TRUE_POSITIVES, FALSE_POSITIVES, TRUE_NEGATIVES, FALSE_NEGATIVES
+- The intersection between (for instance) the column NEUTRAL and FALSE_POSITIVES is the number
+of false positives in the class Neutral, that is, the number of elements which have been classified
+as neutral when they shouldn't.</p>
 <p>This function takes the resume table, a list of classified tones, and the actual tones,
-and updates the resume table accordingly. That is, for every class "Positif", "Négatif",
-"Neutre", "Pas Mentionné", and "Positif ou Négatif", it counts the number of true positives,
+and updates the resume table accordingly. That is, for every class POSITIVE, NEGATIVE,
+NEUTRAL, NOT_MENTIONED, and POSITIVE_OR_NEGATIVE, it counts the number of true positives,
 false positives, true negatives, and false negatives, and updates the row accordingly.</p></div>
 </dd>
 </dl>

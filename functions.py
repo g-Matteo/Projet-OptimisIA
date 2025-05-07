@@ -10,6 +10,49 @@ from dotenv import load_dotenv
 import json
 
 debug = False
+english = True
+
+if english:
+    POSITIVE = "Positive"
+    NEGATIVE = "Negative"
+    NEUTRAL  = "Neutral"
+    NOT_MENTIONED = "Not mentioned"
+    NO_FEEDBACK = "No feedback."
+    POSITIVE_OR_NEGATIVE = "Positive or Negative"
+    TRUE_POSITIVES = "True Positive"
+    FALSE_POSITIVES = "False Positive"
+    TRUE_NEGATIVES = "True Negative"
+    FALSE_NEGATIVES = "False Negative"
+    ZERO_SHOT_PATH = "prompts/zero_shot_prompt_english.txt"
+    PROMPT_CHAINING_PATH = "prompts/prompt_chaining_prompt_english.txt"
+    REFLEXION_PATH = "prompts/reflexion_and_action_prompt_english.txt"
+    EVALUATION_PATH = "prompts/evaluation_prompt_english.txt"
+    VERBATIM_GENERATOR_PATH = "prompts/verbatim_generator_prompt_english.txt"
+    CATEGORIES_PATH = "json/categories_english.json"
+    DETAILED_CATEGORIES_PATH = "json/detailed_categories_english.json"
+else:
+    POSITIVE = "Positif"
+    NEGATIVE = "Négatif"
+    NEUTRAL  = "Neutre"
+    NOT_MENTIONED = "Pas mentionné"
+    NO_FEEDBACK = "Pas de feedback."
+    POSITIVE_OR_NEGATIVE = "Positif ou Négatif"
+    TRUE_POSITIVES = "Vrais Positifs"
+    FALSE_POSITIVES = "Faux Positifs"
+    TRUE_NEGATIVES = "Vrais Négatifs"
+    FALSE_NEGATIVES = "Faux Négatifs"
+    ZERO_SHOT_PATH = "prompts/zero_shot_prompt.txt"
+    PROMPT_CHAINING_PATH = "prompts/prompt_chaining_prompt.txt"
+    REFLEXION_PATH = "prompts/reflexion_and_action_prompt.txt"
+    EVALUATION_PATH = "prompts/evaluation_prompt.txt"
+    VERBATIM_GENERATOR_PATH = "prompts/verbatim_generator_prompt.txt"
+    CATEGORIES_PATH = "json/categories.json"
+    DETAILED_CATEGORIES_PATH = "json/detailed_categories.json"
+
+
+#True Positive, False Positive, True Negative, False Negative
+TP, FP, TN, FN = 0, 1, 2, 3
+BIS = 4
 
 load_dotenv()
 

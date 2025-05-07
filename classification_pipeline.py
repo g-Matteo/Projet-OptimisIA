@@ -11,7 +11,7 @@ def verify_answer(generated_categories : list[str], generated_tones : list[str],
     - generated_tones is a list of strings
     - categories is a list of strings
     """
-    return (generated_categories == categories) and all(generated_tone in ["Positif", "Négatif", "Neutre", "Pas mentionné"] for generated_tone in generated_tones)
+    return (generated_categories == categories) and all(generated_tone in [POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED] for generated_tone in generated_tones)
 
 
 def classify(prompt : str, categories : list[str], substitutions : dict[str, str] = {}):
@@ -42,7 +42,7 @@ def classify_zero_shot(verbatim : str, categories : list[str]) -> list[str]:
 
     The prompt can be found in "prompts/zero_shot_prompt.txt"
     """
-    prompt = file_to_str("prompts/zero_shot_prompt.txt", {"<verbatim>" : verbatim, "<categories>": list_to_JSON(categories)})
+    prompt = file_to_str(ZERO_SHOT_PATH, {"<verbatim>" : verbatim, "<categories>": list_to_JSON(categories)})
     return classify(prompt, categories)
 
 def classify_prompt_chaining(verbatim : str, categories : list[str], minibatch_size : int = 9) -> list[str]:
@@ -55,7 +55,7 @@ def classify_prompt_chaining(verbatim : str, categories : list[str], minibatch_s
 
     The prompt can be found in "prompts/prompt_chaining_prompt.txt"
     """
-    prompt = file_to_str("prompts/prompt_chaining_prompt.txt", {"<verbatim>" : verbatim})
+    prompt = file_to_str(PROMPT_CHAINING_PATH, {"<verbatim>" : verbatim})
     already_classified = []
     classified_tones = []
     while len(classified_tones)<len(categories):
@@ -111,8 +111,8 @@ def classify_reflexion(verbatim : str, categories : list[str], nb_loops : int = 
     #We start by doing a zero-shot prompt
     classified_tones = classify_zero_shot(verbatim, categories)
     #We get the prompts of "prompts/evaluation_prompt.txt" and "reflexion_prompt.txt"
-    evaluation_prompt = file_to_str("prompts/evaluation_prompt.txt", {"<verbatim>" : verbatim})
-    reflexion_and_action_prompt = file_to_str("prompts/reflexion_and_action_prompt.txt", {"<verbatim>" : verbatim})
+    evaluation_prompt = file_to_str(EVALUATION_PATH, {"<verbatim>" : verbatim})
+    reflexion_and_action_prompt = file_to_str(REFLEXION_PATH, {"<verbatim>" : verbatim})
 
     best_classification, best_score = None, -1
     for i in range(nb_loops):
@@ -122,8 +122,8 @@ def classify_reflexion(verbatim : str, categories : list[str], nb_loops : int = 
             classified_tones = classify(reflexion_and_action_prompt, categories, {"<categories>" : list_to_JSON(categories, classified_tones), "<feedback>" : feedback, "<score>" : score})
         #Evaluation: we use the prompt of "evaluator_prompt.txt" to evaluate the current classification
         evaluation_response = LLM_query(evaluation_prompt, {"<categories>" : list_to_JSON(categories, classified_tones)}, is_json=True)
-        #We get the feedback comment ("Pas de feedback." by default) and score (0 by default)
-        feedback, score = evaluation_response.get("feedback", "Pas de feedback."), evaluation_response.get("score", 0)
+        #We get the feedback comment (NO_FEEDBACK by default) and score (0 by default)
+        feedback, score = evaluation_response.get("feedback", NO_FEEDBACK), evaluation_response.get("score", 0)
         #We keep only the best result
         if best_score < score:
             best_score = score

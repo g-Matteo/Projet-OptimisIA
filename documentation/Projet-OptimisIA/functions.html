@@ -70,7 +70,13 @@ pipeline, and the verbatim generator</p>
             stream=False,
             response_format={&#34;type&#34;: &#34;json_object&#34;}
         )
-        return json.loads(response.choices[0].message.content)
+        res = response.choices[0].message.content
+
+        if debug:
+            print(&#34;---\n&#34;)
+            print(res[res.index(&#34;{&#34;):res.index(&#34;}&#34;)+1])
+            print(&#34;---\n&#34;)
+        return json.loads(res[res.index(&#34;{&#34;):res.index(&#34;}&#34;)+1])
         #return json.loads(&#39;{\n    &#34;feedback&#34;: &#34;Bien&#34;,\n    &#34;score&#34;: 80\n}&#39;)
     else:
         response = client.chat.completions.create(

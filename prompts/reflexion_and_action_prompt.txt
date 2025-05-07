@@ -12,4 +12,4 @@ Feedback : <feedback>
 
 Prends bien le temps de réfléchir à ce feedback.
 
-Maintenant, à partir de ce feedback, essaie de proposer une meilleure classification pour les mêmes catégories. Ta réponse doit être retournée sous le même format JSON. Ne fais aucun commentaire, génère juste le JSON de manière identique, mais où tu corriges les erreurs. Aussi, ne change pas les catégories du JSON.
+Maintenant, à partir de ce feedback, essaie de proposer une meilleure classification pour les mêmes catégories. Ta réponse doit être retournée sous le même format JSON. Ne fais aucun commentaire, génère juste le JSON de manière identique, mais où tu corriges les erreurs. Aussi, ne change pas les catégories du JSON. Enfin, les tonalités que tu dois donner doivent être soit "Positif", "Négatif", "Neutre", ou "Pas mentionné".

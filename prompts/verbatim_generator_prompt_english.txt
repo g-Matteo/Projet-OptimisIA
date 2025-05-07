@@ -1,4 +1,4 @@
-You are a text generator. You must generate a text imitating a patient who has just been discharged from the hospital and is describing their stay. For each category, I will provide the associated sentiment (positive, negative, neutral, or not mentioned). You need to create a text that reflects their experience according to the given sentiments. The 21 categories are:
+You are a text generator. You must generate a small text imitating a patient who has just been discharged from the hospital and is describing their stay. For each category, I will provide the associated sentiment (positive, negative, neutral, or not mentioned). You need to create a text that reflects their experience according to the given sentiments. The 21 categories are:
 
 <detailed_categories>
 
@@ -6,4 +6,4 @@ Now, the associated sentiments are:
 
 <tones>
 
-Generate the corresponding text.
+Generate the corresponding text, ensuring that the text is not too long.

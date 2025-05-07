@@ -106,7 +106,8 @@ el.replaceWith(d);
     - substitutions is an optional dictionary (see substitute())
     &#34;&#34;&#34;
     repeat = True
-    print(prompt)
+    if debug:
+        print(prompt)
     while repeat:
         JSON_dict = LLM_query(prompt, substitutions, is_json=True)
         generated_categories, generated_tones = list(JSON_dict.keys()), list(JSON_dict.values())
@@ -217,7 +218,7 @@ category is classified.</p>
         #Evaluation: we use the prompt of &#34;evaluator_prompt.txt&#34; to evaluate the current classification
         evaluation_response = LLM_query(evaluation_prompt, {&#34;&lt;categories&gt;&#34; : list_to_JSON(categories, classified_tones)}, is_json=True)
         #We get the feedback comment (&#34;Pas de feedback.&#34; by default) and score (0 by default)
-        feedback, score = evaluation_response.get(&#34;feedback&#34;, &#34;Pas de feedback.&#34;), evaluation_response.get(&#34;score&#34;, 0)
+        feedback, score = evaluation_response.get(&#34;feedback&#34;, NO_FEEDBACK), evaluation_response.get(&#34;score&#34;, 0)
         #We keep only the best result
         if best_score &lt; score:
             best_score = score
@@ -310,7 +311,7 @@ Action -&gt; Evaluation -&gt; Reflexion -&gt; Action -&gt; Evaluation -&gt; Refl
     - generated_tones is a list of strings
     - categories is a list of strings
     &#34;&#34;&#34;
-    return (generated_categories == categories) and all(generated_tone in [&#34;Positif&#34;, &#34;Négatif&#34;, &#34;Neutre&#34;, &#34;Pas mentionné&#34;] for generated_tone in generated_tones)</code></pre>
+    return (generated_categories == categories) and all(generated_tone in [POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED] for generated_tone in generated_tones)</code></pre>
 </details>
 <div class="desc"><p>Takes lists of categories and tones, and the real categories, and returns whether the answer is valid.</p>
 <p>When querying the LLM to get a json file, we must obtain a json whose keys are categories and whose

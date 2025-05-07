@@ -6,10 +6,6 @@ import numpy as np
 import krippendorff
 import pandas
 
-#True Positive, False Positive, True Negative, False Negative
-TP, FP, TN, FN = 0, 1, 2, 3
-PAS_MENTIONNE, BIS = 3, 4
-
 def get_verbatims_and_tones(filename : str) -> list[tuple[str, list[str]]]:
     """Returns a list of (verbatim, tones) which have previously been generated via verbatim-generator.py
 
@@ -17,7 +13,7 @@ def get_verbatims_and_tones(filename : str) -> list[tuple[str, list[str]]]:
 
     More precisions for the output:
     - verbatim is a string
-    - tones is a list which, for the i-th category, contains a value between "Positif", "Négatif", "Pas mentionné", and "Neutre"
+    - tones is a list which, for the i-th category, contains a value between POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED
     """
     res = []
     with open(filename, "r") as fd:
@@ -32,12 +28,12 @@ def get_verbatims_and_tones(filename : str) -> list[tuple[str, list[str]]]:
 def to_number(s : str) -> int:
     """This function converts a tone into a number
     
-    "Positif"       -> 0
-    "Négatif"       -> 1
-    "Neutre"        -> 2
-    "Pas mentionné" -> 3
+    POSITIVE      -> 0
+    NEGATIVE      -> 1
+    NEUTRAL       -> 2
+    NOT_MENTIONED -> 3
     """
-    return ["Positif", "Négatif", "Neutre", "Pas mentionné"].index(s)
+    return [POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED].index(s)
 
 def mean(x: list[int]) -> float:
     """Computes the mean of a list or generator"""
@@ -48,18 +44,18 @@ def update_resume_table(M : list[list[int]], classified_tones : list[str], actua
     """Updates the so-called "resume table" M.
 
     The resume table M is a matrix with five rows and four columns such that:
-    - The five rows are named "Positif", "Négatif", "Neutre", "Pas mentionné", and "Positif ou Négatif".
-    - The four columns are named "True Positive", "False Positive", "True Negative", "False Negative"
-    - The intersection between (for instance) the column "Neutre" and "False Positives" is the number
-    of false positives in the class "Neutre", that is, the number of elements which have been classified
-    as "Neutre" when they shouldn't.
+    - The five rows are named POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED, and POSITIVE_OR_NEGATIVE.
+    - The four columns are named TRUE_POSITIVES, FALSE_POSITIVES, TRUE_NEGATIVES, FALSE_NEGATIVES
+    - The intersection between (for instance) the column NEUTRAL and FALSE_POSITIVES is the number
+    of false positives in the class Neutral, that is, the number of elements which have been classified
+    as neutral when they shouldn't.
 
     This function takes the resume table, a list of classified tones, and the actual tones,
-    and updates the resume table accordingly. That is, for every class "Positif", "Négatif",
-    "Neutre", "Pas Mentionné", and "Positif ou Négatif", it counts the number of true positives,
+    and updates the resume table accordingly. That is, for every class POSITIVE, NEGATIVE,
+    NEUTRAL, NOT_MENTIONED, and POSITIVE_OR_NEGATIVE, it counts the number of true positives,
     false positives, true negatives, and false negatives, and updates the row accordingly.    
     """
-    possible_tones = [["Positif"], ["Négatif"], ["Neutre"], ["Pas mentionné"], ["Positif", "Négatif"]]
+    possible_tones = [[POSITIVE], [NEGATIVE], [NEUTRAL], [NOT_MENTIONED], [POSITIVE, NEGATIVE]]
     #For every row
     for i in range(len(possible_tones)):
         #We count the number of True Positives, False Positives, True Negatives, and False Negatives
@@ -78,70 +74,70 @@ def print_table(M):
 
     For more info about the resume table, see the documentation of update_resume_table().
     """
-    M = pandas.DataFrame(M, index=["Positif", "Négatif", "Neutre", "Pas mentionné", "Positif ou Négatif"], columns=["True Positive", "False Positive", "True Negative", "False Negative"])
+    M = pandas.DataFrame(M, index=[POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED, POSITIVE_OR_NEGATIVE], columns=[TRUE_POSITIVES, FALSE_POSITIVES, TRUE_NEGATIVES, FALSE_NEGATIVES])
     print(M)
 
 def precision(M, bis=False):
     """Returns the precision.
     
-    The precision is equal to mean(precision of "Positif", ..., precision of "Pas mentionné").
+    The precision is equal to mean(precision of POSITIVE, ..., precision of NOT_MENTIONED).
     The precision of the class i is the number of true positives of class i,
     divided by the number of true positives and false positives of class i.
 
-    If bis=true, then the precision is the number of true positives of class "Positif ou Négatif",
-    divided by the number of true positives and false positives of class "Positif ou Négatif"
+    If bis=true, then the precision is the number of true positives of class POSITIVE_OR_NEGATIVE,
+    divided by the number of true positives and false positives of class POSITIVE_OR_NEGATIVE
 
     If the division is impossible in any of these cases, we return -1.
 
     The second implementation is the method used in Zeno's article. In Zeno's article, they set
-    "Positif" = "Négatif" = 1 and "Neutre" = "Pas mentionné" = 0, and compute the precision of the class 1.
+    POSITIVE = NEGATIVE = 1 and NEUTRAL = NOT_MENTIONED = 0, and compute the precision of the class 1.
 
-    We include both methods since the first one has an advantage: as it considers "Positif" as different from
-    "Négatif", it penalizes a misclassification between these two classes, and the same can be said for the
-    classes "Neutre" and "Pas mentionné".
+    We include both methods since the first one has an advantage: as it considers POSITIVE as different from
+    NEGATIVE, it penalizes a misclassification between these two classes, and the same can be said for the
+    classes NEUTRAL and NOT_MENTIONED.
     """
     if bis:
-        #precision_bis = precision of class ["Positif", "Négatif"]
+        #precision_bis = precision of class POSITIVE_OR_NEGATIVE
         return -1 if (M[BIS][TP]+M[BIS][FP])==0 else M[BIS][TP]/(M[BIS][TP]+M[BIS][FP])
     else:
-        #precision = mean(precision of "Positif", ..., precision of "Pas mentionné")
+        #precision = mean(precision of POSITIVE, ..., precision of NOT_MENTIONED)
         #precision of class X = True Positives of class X / (True Positives of class X + False positives of class X)
         return -1 if any(M[i][TP]+M[i][FP]==0 for i in range(4)) else mean(M[i][TP]/(M[i][TP]+M[i][FP]) for i in range(4))
 
 def recall(M, bis=False):
     """Returns the recall.
     
-    The recall is equal to mean(recall of "Positif", ..., recall of "Pas mentionné").
+    The recall is equal to mean(recall of POSITIVE, ..., recall of NOT_MENTIONED).
     The recall of class i is the number of true positives of class i,
     divided by the number of true positives and false negatives of class i.
 
-    If bis=true, then the recall is the number of true positives of class "Positif ou Négatif",
-    divided by the number of true positives and false negatives of class "Positif ou Négatif"
+    If bis=true, then the recall is the number of true positives of class POSITIVE_OR_NEGATIVE,
+    divided by the number of true positives and false negatives of class POSITIVE_OR_NEGATIVE
 
     If the division is impossible in any of these cases, we return -1.
 
     For more info about the bis option, see the documentation of precision().
     """
     if bis:
-        #recall_bis = recall of class ["Positif", "Négatif"]
+        #recall_bis = recall of class POSITIVE_OR_NEGATIVE
         return -1 if (M[BIS][TP]+M[BIS][FN])==0 else M[BIS][TP]/(M[BIS][TP]+M[BIS][FN])
     else:
-        #recall = mean(recall of "Positif", ..., recall of "Pas mentionné")
+        #recall = mean(recall of POSITIVE, ..., recall of NOT_MENTIONED)
         #recall of class X = True Positives of class X / (True Positives of class X + False Negatives of class X)
         return -1 if any((M[i][TP]+M[i][FN])==0 for i in range(4)) else mean(M[i][TP]/(M[i][TP]+M[i][FN]) for i in range(4))
 
 def hallucination_rate(M):
     """Returns the hallucination rate.
     
-    The hallucination rate is equal to the number of false negatives of "Pas mentionné",
-    divided by the true positives, false positives, true negatives, and false negatives of "Pas mentionné".
+    The hallucination rate is equal to the number of false negatives of NOT_MENTIONED,
+    divided by the true positives, false positives, true negatives, and false negatives of NOT_MENTIONED.
 
-    Equivalently, it is the proportion of time where elements are wrongly not classified as "Pas mentionné",
+    Equivalently, it is the proportion of time where elements are wrongly not classified as NOT_MENTIONED,
     which represents the rate at which the LLM sees features where there aren't.
     """
-    #hallucination_rate = ratio of tones which haven't been classified as "Pas mentionné" when they should
-    #hallucination_rate = False Negatives of "Pas mentionné" / (True Positives of "Pas Mentionné" + ... + False Negatives of "Pas Mentionné")
-    return M[PAS_MENTIONNE][FN]/sum(M[PAS_MENTIONNE][i] for i in range(4))
+    #hallucination_rate = ratio of tones which haven't been classified as NOT_MENTIONED when they should
+    #hallucination_rate = False Negatives of NOT_MENTIONED / (True Positives of NOT_MENTIONED + ... + False Negatives of NOT_MENTIONED)
+    return M[to_number(NOT_MENTIONED)][FN]/sum(M[to_number(NOT_MENTIONED)][i] for i in range(4))
 
 def evaluation_pipeline():
     """The main function of the evaluation pipeline.
@@ -156,10 +152,11 @@ def evaluation_pipeline():
     if len(sys.argv)!=2:
         exit(f"Usage: {sys.argv[0]} input_file.txt")
 
-    categories = list(json.loads(file_to_str("categories.json")).keys())
+    categories = list(json.loads(file_to_str(CATEGORIES_PATH)).keys())
 
     #for each classification method
-    for classification_method, name_of_method in zip([classify_zero_shot, classify_prompt_chaining, classify_tree_of_thoughts, classify_reflexion], ["Zero-Shot", "Prompt Chaining", "Tree of Thoughts", "Reflexion"]):
+    #for classification_method, name_of_method in zip([classify_zero_shot, classify_prompt_chaining, classify_tree_of_thoughts, classify_reflexion], ["Zero-Shot", "Prompt Chaining", "Tree-of-Thoughts", "Reflexion"]):
+    for classification_method, name_of_method in zip([classify_reflexion], ["Reflexion"]):
         time_taken = 0
         list_classified_tones = [[], []]
         nb_verbatims = 0
