@@ -8,9 +8,11 @@ import os
 from openai import OpenAI
 from dotenv import load_dotenv
 import json
+from json_schema import build_JSON_SCHEMA
 
 debug = False
 english = False
+schema = False
 
 if english:
     POSITIVE = "Positive"
@@ -49,6 +51,7 @@ else:
     CATEGORIES_PATH = "json/categories.json"
     DETAILED_CATEGORIES_PATH = "json/detailed_categories.json"
 
+if schema : feedback_schema=build_JSON_SCHEMA(english)
 
 #True Positive, False Positive, True Negative, False Negative
 TP, FP, TN, FN = 0, 1, 2, 3
@@ -95,12 +98,19 @@ def LLM_query(prompt : str, substitutions : dict[str, str] = {}, is_json : bool 
     if is_json:
         repeat=True
         while repeat:
-            response = client.chat.completions.create(
-                model=os.environ.get("MODEL"),
-                messages=[{"role": "user", "content": prompt}],
-                stream=False,
-                response_format={"type": "json_object"}
-            )
+            if schema: 
+                response = client.beta.chat.completions.parse(
+                    model=os.environ.get("MODEL"),
+                    messages=[{"role": "user", "content": prompt}],
+                    response_format=feedback_schema
+                )
+            else:
+                response = client.chat.completions.create(
+                    model=os.environ.get("MODEL"),
+                    messages=[{"role": "user", "content": prompt}],
+                    stream=False,
+                    response_format={"type": "json_object"}
+                )
             res = response.choices[0].message.content
 
             try:
