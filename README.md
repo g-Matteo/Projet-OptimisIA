@@ -51,3 +51,10 @@ The output will be given on the stdout. It will show metrics of all the prompt m
 ```
 python evaluation_pipeline.py input.txt
 ```
+
+## Settings
+In the function.py file, few parameters are available:
+- debug : If set to True, prints debug information.
+- english : Set to True if the verbatims to classify are in English instead of French.
+- schema : Set to True to enables the use of a JSON Schema as a parameter for the LLM API. The LLM must support structured outputs to use this feature.
+
