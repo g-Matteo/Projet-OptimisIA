@@ -91,7 +91,7 @@ el.replaceWith(d);
                 #We update the resume table (we count the number of true positives, false positives, true negatives, and false negatives)
                 update_resume_table(M, classified_tones, tones)
 
-        print(&#34;======&#34;)
+        print(&#34;\n======&#34;)
         print_table(M)
         print(f&#34;Precision of {name_of_method}: {precision(M):.2f}&#34;)
         print(f&#34;Precision (bis) of {name_of_method}: {precision(M, bis=True):.2f}&#34;)
@@ -157,8 +157,8 @@ el.replaceWith(d);
     Equivalently, it is the proportion of time where elements are wrongly not classified as NOT_MENTIONED,
     which represents the rate at which the LLM sees features where there aren&#39;t.
     &#34;&#34;&#34;
-    #hallucination_rate = ratio of tones which haven&#39;t been classified as &#34;Pas mentionné&#34; when they should
-    #hallucination_rate = False Negatives of &#34;Pas mentionné&#34; / (True Positives of &#34;Pas Mentionné&#34; + ... + False Negatives of &#34;Pas Mentionné&#34;)
+    #hallucination_rate = ratio of tones which haven&#39;t been classified as NOT_MENTIONED when they should
+    #hallucination_rate = False Negatives of NOT_MENTIONED / (True Positives of NOT_MENTIONED + ... + False Negatives of NOT_MENTIONED)
     return M[to_number(NOT_MENTIONED)][FN]/sum(M[to_number(NOT_MENTIONED)][i] for i in range(4))</code></pre>
 </details>
 <div class="desc"><p>Returns the hallucination rate.</p>
@@ -239,14 +239,14 @@ classes NEUTRAL and NOT_MENTIONED.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def print_table(M):
-    &#34;&#34;&#34;Prints the so-called &#34;resume table&#34; M.
+    &#34;&#34;&#34;Prints the so-called &#34;resume table&#34; M, whose values are percentages.
 
     For more info about the resume table, see the documentation of update_resume_table().
     &#34;&#34;&#34;
-    M = pandas.DataFrame(M, index=[POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED, POSITIVE_OR_NEGATIVE], columns=[TRUE_POSITIVES, FALSE_POSITIVES, TRUE_NEGATIVES, FALSE_NEGATIVES])
+    M = pandas.DataFrame(np.round(M/sum(M[0])*100, 1), index=[POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED, POSITIVE_OR_NEGATIVE], columns=[TRUE_POSITIVES, FALSE_POSITIVES, TRUE_NEGATIVES, FALSE_NEGATIVES])
     print(M)</code></pre>
 </details>
-<div class="desc"><p>Prints the so-called "resume table" M.</p>
+<div class="desc"><p>Prints the so-called "resume table" M, whose values are percentages.</p>
 <p>For more info about the resume table, see the documentation of update_resume_table().</p></div>
 </dd>
 <dt id="Projet-OptimisIA.evaluation_pipeline.recall"><code class="name flex">

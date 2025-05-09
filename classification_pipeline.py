@@ -33,7 +33,10 @@ def classify(prompt : str, categories : list[str], substitutions : dict[str, str
         JSON_dict = LLM_query(prompt, substitutions, is_json=True)
         generated_categories, generated_tones = list(JSON_dict.keys()), list(JSON_dict.values())
         repeat = not(verify_answer(generated_categories, generated_tones, categories))
-        print("retry" if repeat else "ok")
+        if repeat:
+            print("retry", end=' ')
+        else:
+            print("ok", end=' ')
 
     return generated_tones
 

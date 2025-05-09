@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 import json
 
 debug = False
-english = True
+english = False
 
 if english:
     POSITIVE = "Positive"

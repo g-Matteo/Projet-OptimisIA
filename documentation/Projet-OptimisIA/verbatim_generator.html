@@ -76,6 +76,7 @@ el.replaceWith(d);
 
     with open(sys.argv[1], &#34;a&#34;) as fd:
         for i in range(int(sys.argv[2])):
+            print(&#34;generating verbatim...&#34;)
             tones = [[POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED][randint(0, 3)] for _ in range(21)]
             verbatim = LLM_query(prompt, {&#34;&lt;tones&gt;&#34; : str(tones)}).replace(&#39;\n&#39;, &#39; &#39;).replace(&#39;\r&#39;, &#39;&#39;)
             fd.write(f&#34;{tones} {verbatim}\n&#34;)</code></pre>

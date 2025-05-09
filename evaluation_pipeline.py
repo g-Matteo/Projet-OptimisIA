@@ -70,11 +70,11 @@ def update_resume_table(M : list[list[int]], classified_tones : list[str], actua
                 M[i][FN] += 1
 
 def print_table(M):
-    """Prints the so-called "resume table" M.
+    """Prints the so-called "resume table" M, whose values are percentages.
 
     For more info about the resume table, see the documentation of update_resume_table().
     """
-    M = pandas.DataFrame(M, index=[POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED, POSITIVE_OR_NEGATIVE], columns=[TRUE_POSITIVES, FALSE_POSITIVES, TRUE_NEGATIVES, FALSE_NEGATIVES])
+    M = pandas.DataFrame(np.round(M/sum(M[0])*100, 1), index=[POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED, POSITIVE_OR_NEGATIVE], columns=[TRUE_POSITIVES, FALSE_POSITIVES, TRUE_NEGATIVES, FALSE_NEGATIVES])
     print(M)
 
 def precision(M, bis=False):
@@ -155,8 +155,7 @@ def evaluation_pipeline():
     categories = list(json.loads(file_to_str(CATEGORIES_PATH)).keys())
 
     #for each classification method
-    #for classification_method, name_of_method in zip([classify_zero_shot, classify_prompt_chaining, classify_tree_of_thoughts, classify_reflexion], ["Zero-Shot", "Prompt Chaining", "Tree-of-Thoughts", "Reflexion"]):
-    for classification_method, name_of_method in zip([classify_reflexion], ["Reflexion"]):
+    for classification_method, name_of_method in zip([classify_zero_shot, classify_prompt_chaining, classify_tree_of_thoughts, classify_reflexion], ["Zero-Shot", "Prompt Chaining", "Tree-of-Thoughts", "Reflexion"]):
         time_taken = 0
         list_classified_tones = [[], []]
         nb_verbatims = 0
@@ -179,7 +178,7 @@ def evaluation_pipeline():
                 #We update the resume table (we count the number of true positives, false positives, true negatives, and false negatives)
                 update_resume_table(M, classified_tones, tones)
 
-        print("======")
+        print("\n======")
         print_table(M)
         print(f"Precision of {name_of_method}: {precision(M):.2f}")
         print(f"Precision (bis) of {name_of_method}: {precision(M, bis=True):.2f}")

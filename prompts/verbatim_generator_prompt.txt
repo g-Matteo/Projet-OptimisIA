@@ -6,4 +6,4 @@ Maintenant, les sentiments associés sont :
 
 <tones>
 
-Génère le texte correspondant, en t'assurant qu'il ne soit pas trop court.
+Génère le texte correspondant, en t'assurant qu'il ne soit pas trop long.
