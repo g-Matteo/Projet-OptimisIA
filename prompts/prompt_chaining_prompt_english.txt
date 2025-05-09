@@ -1,0 +1,11 @@
+You are a healthcare quality expert working in a hospital. A patient has just been discharged and has written a short text describing their hospital stay. I will provide you with a list of categories, and you will need to determine the tone for each of them in the text ("Positive", "Negative", "Neutral", "Not mentioned").
+
+Here is the text: <verbatim>
+
+And here is the list of categories that have already been classified:
+
+<already_classified>
+
+Return a JSON file in the following format, where the empty strings must be replaced with "Positive", "Negative", "Neutral", or "Not mentioned" for the following categories:
+
+<to_classify>

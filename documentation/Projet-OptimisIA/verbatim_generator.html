@@ -59,8 +59,8 @@ el.replaceWith(d);
     - The path of the output file (mostly &#34;generated_verbatims.txt&#34;)
     - The number of verbatims that we want to generate
 
-    We create a table of 21 tones randomly (IID) set to &#34;Positif&#34;,
-    &#34;Négatif&#34;, &#34;Neutre&#34;, &#34;Pas mentionné&#34;. Then, we ask the LLM
+    We create a table of 21 tones randomly (IID) set to POSITIVE, NEGATIVE,
+    NEUTRAL, or NOT_MENTIONED. Then, we ask the LLM
     (using &#34;prompts/verbatim_generator_prompt.txt&#34;) to generate a verbatim
     matching these tones. Finally, we store the tones and the verbatim
     in the output file.
@@ -71,12 +71,13 @@ el.replaceWith(d);
     if len(sys.argv)!=3:
         exit(f&#34;Usage: {sys.argv[0]} output_file.txt number_of_verbatims&#34;)
     
-    detailed_categories_str = file_to_str(&#34;detailed_categories.json&#34;)
-    prompt = file_to_str(&#34;prompts/verbatim_generator_prompt.txt&#34;, {&#34;&lt;detailed_categories&gt;&#34; : detailed_categories_str})
+    detailed_categories_str = file_to_str(DETAILED_CATEGORIES_PATH)
+    prompt = file_to_str(VERBATIM_GENERATOR_PATH, {&#34;&lt;detailed_categories&gt;&#34; : detailed_categories_str})
 
     with open(sys.argv[1], &#34;a&#34;) as fd:
         for i in range(int(sys.argv[2])):
-            tones = [[&#34;Positif&#34;, &#34;Négatif&#34;, &#34;Neutre&#34;, &#34;Pas mentionné&#34;][randint(0, 3)] for _ in range(21)]
+            print(&#34;generating verbatim...&#34;)
+            tones = [[POSITIVE, NEGATIVE, NEUTRAL, NOT_MENTIONED][randint(0, 3)] for _ in range(21)]
             verbatim = LLM_query(prompt, {&#34;&lt;tones&gt;&#34; : str(tones)}).replace(&#39;\n&#39;, &#39; &#39;).replace(&#39;\r&#39;, &#39;&#39;)
             fd.write(f&#34;{tones} {verbatim}\n&#34;)</code></pre>
 </details>
@@ -84,8 +85,8 @@ el.replaceWith(d);
 <p>This function takes as input two arguments:
 - The path of the output file (mostly "generated_verbatims.txt")
 - The number of verbatims that we want to generate</p>
-<p>We create a table of 21 tones randomly (IID) set to "Positif",
-"Négatif", "Neutre", "Pas mentionné". Then, we ask the LLM
+<p>We create a table of 21 tones randomly (IID) set to POSITIVE, NEGATIVE,
+NEUTRAL, or NOT_MENTIONED. Then, we ask the LLM
 (using "prompts/verbatim_generator_prompt.txt") to generate a verbatim
 matching these tones. Finally, we store the tones and the verbatim
 in the output file.</p>

@@ -1,0 +1,15 @@
+You are an expert in healthcare quality and in self-assessing your own analyses. A patient has been discharged and has written a text describing their hospital stay:
+
+Text: <verbatim>
+
+After reading this text, you were given a set of categories, and for each of them, you assigned a tone ("Positive", "Negative", "Neutral", "Not mentioned") as follows:
+
+<categories>
+
+An evaluator, after reviewing your classification, gave it a score of <score> and wrote the following detailed feedback:
+
+Feedback: <feedback>
+
+Take your time to carefully reflect on this feedback.
+
+Now, based on this feedback, try to provide an improved classification for the same categories. Your response must be returned in the same JSON format. Do not add any comments—just generate the JSON in the same structure, but with corrected values. Also, do not modify the list of categories in the JSON. Finally, the tones you should provide must be either "Positive", "Negative", "Neutral", or "Not mentioned".

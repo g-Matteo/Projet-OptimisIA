@@ -3,3 +3,5 @@ openai==1.69.0
 python-dotenv==1.1.0
 pandas==2.2.3
 pdoc==15.0.1
+pydantic==2.10.3
+typing_extensions==4.12.2

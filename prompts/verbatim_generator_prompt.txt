@@ -1,4 +1,4 @@
-Tu es un générateur de texte. Tu dois générer un texte imitant un patient qui sort de l'hôpital et qui parle de son séjour. Pour chaque catégorie, je te dis le sentiment qui est associé (positif, négatif, neutre, ou non mentionné). Tu dois créer un texte qui représente son séjour selon les sentiments donnés. Les 21 catégories sont :
+Tu es un générateur de texte. Tu dois générer un court texte imitant un patient qui sort de l'hôpital et qui parle de son séjour. Pour chaque catégorie, je te dis le sentiment qui est associé (positif, négatif, neutre, ou non mentionné). Tu dois créer un texte qui représente son séjour selon les sentiments donnés. Les 21 catégories sont :
 
 <detailed_categories>
 
@@ -6,4 +6,4 @@ Maintenant, les sentiments associés sont :
 
 <tones>
 
-Génère le texte correspondant.
+Génère le texte correspondant, en t'assurant qu'il ne soit pas trop long.

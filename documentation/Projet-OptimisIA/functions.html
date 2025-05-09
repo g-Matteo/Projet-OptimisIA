@@ -64,14 +64,27 @@ pipeline, and the verbatim generator</p>
     &#34;&#34;&#34;
     prompt = substitute(prompt, substitutions)
     if is_json:
-        response = client.chat.completions.create(
-            model=os.environ.get(&#34;MODEL&#34;),
-            messages=[{&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: prompt}],
-            stream=False,
-            response_format={&#34;type&#34;: &#34;json_object&#34;}
-        )
-        return json.loads(response.choices[0].message.content)
-        #return json.loads(&#39;{\n    &#34;feedback&#34;: &#34;Bien&#34;,\n    &#34;score&#34;: 80\n}&#39;)
+        repeat=True
+        while repeat:
+            response = client.chat.completions.create(
+                model=os.environ.get(&#34;MODEL&#34;),
+                messages=[{&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: prompt}],
+                stream=False,
+                response_format={&#34;type&#34;: &#34;json_object&#34;}
+            )
+            res = response.choices[0].message.content
+
+            try:
+                res = json.loads(res[res.index(&#34;{&#34;):res.index(&#34;}&#34;)+1])
+                repeat=False
+            except ValueError as e:
+                repeat=True
+                print(&#34;retry&#34;)
+
+        if debug:
+            print(f&#34;\n---\n{res}\n---\n&#34;)
+
+        return res
     else:
         response = client.chat.completions.create(
             model=os.environ.get(&#34;MODEL&#34;),
